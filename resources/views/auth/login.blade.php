@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panda666| Log in</title>
+    <title>SlotMaker| Log in</title>
 
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -28,7 +28,7 @@
         @media (max-width: 768px) {
             .login-page {
                 background-size: cover;
-                background-image: url(img/mobile.jpg);
+                background-image: url(img/slot_maker.jpg);
                 padding: 20px;
                 /* Add padding for smaller screens */
             }
