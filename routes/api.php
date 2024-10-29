@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Bank\BankController;
+use App\Http\Controllers\Api\V1\BannerController;
+use App\Http\Controllers\Api\V1\PromotionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +18,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/player-change-password', [AuthController::class, 'playerChangePassword']);
+
+// logout
+
+Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('promotion', [PromotionController::class, 'index']);
+Route::get('banner', [BannerController::class, 'index']);
+Route::get('bannerText', [BannerController::class, 'bannerText']);
+Route::get('popup-ads-banner', [BannerController::class, 'AdsBannerIndex']);
