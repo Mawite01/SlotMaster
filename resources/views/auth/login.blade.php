@@ -40,7 +40,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <img src="{{ asset('img/slot_maker.png') }}" alt="" width="200px">
+            <img src="{{ asset('img/slot_maker.jpg') }}" alt="" width="200px">
         </div>
         <div class="card">
             <div class="card-body login-card-body">
