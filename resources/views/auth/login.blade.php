@@ -14,7 +14,7 @@
     <style>
         /* Default styles (desktop view) */
         .login-page {
-            background-image: url(img/bg.jpg);
+            background-image: url(img/slot_bg.avif);
             background-repeat: no-repeat;
             background-size: cover;
             height: 100vh;
