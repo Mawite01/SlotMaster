@@ -19,13 +19,30 @@ class DatabaseSeeder extends Seeder
             PaymentTypeTableSeeder::class,
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
-            GameTypeTableSeeder::class,
-            ProductTableSeeder::class,
-            GameTypeProductTableSeeder::class,
             BannerSeeder::class,
             BannerTextSeeder::class,
             BannerAdsSeeder::class,
             BankTableSeeder::class,
+            GameTypeTableSeeder::class,
+            GameProductSeeder::class,
+            GameTypeProductTableSeeder::class,
+            PragmaticPlaySlotSeeder::class,
+            PragmaticPlayLiveCasinoSeeder::class,
+            PGSoftGameListSeeder::class,
+            JILIGameTableSeeder::class,
+            Live22GameTableSeeder::class,
+            CQ9GameTableSeeder::class,
+            UUSlotGameListSeeder::class, // 8
+            MegaH5GameTableSeeder::class,
+            EpicWinGameTableSeeder::class,
+            YellowBatGameTableSeeder::class,
+            EVOPLAYGameTableSeeder::class,
+            FACHAIGameTableSeeder::class,
+            BNGGameTableSeeder::class,
+            YGRGameTableSeeder::class,
+            FUNTAGameTableSeeder::class,
+            SimplePlayGameTableSeeder::class,
+
         ]);
     }
 }
