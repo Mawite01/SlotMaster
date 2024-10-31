@@ -13,8 +13,8 @@ class SlotWebhookService
         $responseDateTime = now()->format('Y-m-d H:i:s');
 
         // Use round() to ensure balance and before_balance always have 4 decimal places as numbers
-        // $formattedBalance = round($balance, 4);
-        // $formattedBeforeBalance = round($before_balance, 4);
+        $formattedAfterBalance = round($after_balance, 4);
+        $formattedBeforeBalance = round($before_balance, 4);
 
         // Map the response code to its exact description
         $description = match ($responseCode) {
@@ -28,8 +28,8 @@ class SlotWebhookService
             'Status' => $responseCode->value,
             'Description' => $description,
             'ResponseDateTime' => $responseDateTime,
-            'AfterBalance' => $after_balance,
-            'BeforeBalance' => $before_balance,
+            'AfterBalance' => $formattedBeforeBalance,
+            'BeforeBalance' => $formattedAfterBalance,
         ]);
 
         // Return the structured response as numbers with 4 decimal places
@@ -37,7 +37,7 @@ class SlotWebhookService
             'Status' => $responseCode->value,
             'Description' => $description,
             'ResponseDateTime' => $responseDateTime,
-            'Balance' => $after_balance,  // Keep as numeric value, not string
+            'Balance' => $formattedAfterBalance,  // Keep as numeric value, not string
         ];
     }
 }
