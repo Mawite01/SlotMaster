@@ -62,9 +62,9 @@ return [
         'scale' => 64,
     ],
 
-    // 'balance' => [
-    //     'max_scale' => 4,
-    // ],
+    'balance' => [
+        'max_scale' => 4,
+    ],
 
     /**
      * Storage of the state of the balance of wallets.
