@@ -142,7 +142,10 @@ class BetNResultWebhookRequest extends FormRequest
 
     //     return $user ? $user->id : null;
     // }
-
+    public function getMethodName()
+    {
+        return str($this->url())->explode('/')->last();
+    }
     public function getTransactions()
     {
         // Retrieve all necessary fields for the transaction
