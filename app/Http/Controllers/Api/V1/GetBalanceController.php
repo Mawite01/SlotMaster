@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Enums\StatusCode;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\SlotWebhookRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use App\Services\SlotWebhookService;
 use App\Services\SlotWebhookValidator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GetBalanceController extends Controller
 {
-
     public function getBalance(SlotWebhookRequest $request)
     {
         Log::info('GetBalance request initiated', ['request_data' => $request->all()]);
@@ -64,5 +62,4 @@ class GetBalanceController extends Controller
             ], 500);
         }
     }
-
 }

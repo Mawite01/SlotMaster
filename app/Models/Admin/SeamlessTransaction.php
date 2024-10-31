@@ -4,10 +4,10 @@ namespace App\Models\Admin;
 
 use App\Enums\TransactionStatus;
 use App\Models\SeamlessEvent;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Transaction;
 
 class SeamlessTransaction extends Model
 {

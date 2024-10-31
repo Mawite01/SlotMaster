@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Slot;
 
 use App\Models\User;
+use App\Services\Webhook\BetNResultWebhookValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
-use App\Services\Webhook\BetNResultWebhookValidator;
 
 class BetNResultWebhookRequest extends FormRequest
 {
@@ -64,10 +64,10 @@ class BetNResultWebhookRequest extends FormRequest
         return $this->get('Signature');
     }
 
-    public function getPlayerId()
-    {
-        return $this->get('PlayerId');
-    }
+    // public function getPlayerId()
+    // {
+    //     return $this->get('PlayerId');
+    // }
 
     public function getCurrency()
     {
@@ -109,13 +109,39 @@ class BetNResultWebhookRequest extends FormRequest
         return $this->get('AuthToken');
     }
 
+    public function getMember()
+    {
+        $playerId = $this->getMemberName();
+
+        return User::where('user_name', $playerId)->first();
+    }
+
+    public function getMemberName()
+    {
+        return $this->get('PlayerId');
+    }
+
     public function getUserId()
     {
         $player = $this->getPlayerId();
+
         $user = User::where('user_name', $player)->first();
 
-        return $user ? $user->id : null;
+        return $user->id;
     }
+
+    public function getPlayerId()
+    {
+        return $this->get('PlayerId');
+    }
+
+    // public function getUserId()
+    // {
+    //     $player = $this->getPlayerId();
+    //     $user = User::where('user_name', $player)->first();
+
+    //     return $user ? $user->id : null;
+    // }
 
     public function getTransactions()
     {

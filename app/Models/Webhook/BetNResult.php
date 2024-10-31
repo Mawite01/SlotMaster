@@ -2,14 +2,15 @@
 
 namespace App\Models\Webhook;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-Use App\Models\User;
 
 class BetNResult extends Model
 {
     use HasFactory;
-     protected $table = 'bet_n_results';
+
+    protected $table = 'bet_n_results';
 
     protected $fillable = [
         'user_id',

@@ -6,8 +6,9 @@ use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\BetNResultWebhookRequest;
-use App\Models\Webhook\BetNResult;
 use App\Models\User;
+use App\Models\Webhook\BetNResult;
+use App\Services\PlaceBetWebhookService;
 use App\Services\Webhook\BetNResultWebhookValidator;
 use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
@@ -25,19 +26,28 @@ class BetNResultController extends Controller
             Log::info('Starting handleBetNResult method');
 
             // Validate player
-            $player = $request->getUserId();
-            if (!$player) {
-                Log::warning('Invalid player detected', ['PlayerId' => $request->getPlayerId()]);
-                return $this->buildErrorResponse(StatusCode::InvalidPlayer);
+            $player = $request->getMember();
+            if (! $player) {
+                Log::warning('Invalid player detected', [
+                    'PlayerId' => $request->getPlayerId(),
+                ]);
+
+                // Return Invalid Player response
+                return PlaceBetWebhookService::buildResponse(
+                    StatusCode::InvalidPlayerPassword,
+                    0, // Balance is 0 in case of invalid player
+                    0
+                );
             }
 
-            $oldBalance = $player->getUserId->balanceFloat;
+            $oldBalance = $request->getMember()->balanceFloat;
             Log::info('Retrieved player balance', ['old_balance' => $oldBalance]);
 
             // Perform validation using the validator class
             $validator = BetNResultWebhookValidator::make($request)->validate();
             if ($validator->fails()) {
                 Log::warning('Validation failed');
+
                 return $this->buildErrorResponse(StatusCode::InvalidSignature);
             }
 
@@ -47,6 +57,7 @@ class BetNResultController extends Controller
                     'bet_amount' => $request->getBetAmount(),
                     'balance' => $oldBalance,
                 ]);
+
                 return $this->buildErrorResponse(StatusCode::InsufficientBalance, $oldBalance);
             }
 
@@ -54,6 +65,7 @@ class BetNResultController extends Controller
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
             if ($existingTransaction) {
                 Log::warning('Duplicate TranId detected', ['tran_id' => $request->getTranId()]);
+
                 return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $oldBalance);
             }
 
@@ -65,11 +77,11 @@ class BetNResultController extends Controller
                 $request->getBetAmount()
             );
 
-            $newBalance = $player->wallet->refreshBalance()->balance;
+            $newBalance = $request->getMember()->refreshBalance()->balance;
 
             // Create the transaction record
             BetNResult::create([
-                'user_id' => $player->id,
+                'user_id' => $request->getUserId(),
                 'operator_id' => $request->getOperatorId(),
                 'request_date_time' => $request->getRequestDateTime(),
                 'signature' => $request->getSignature(),

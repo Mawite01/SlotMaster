@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\Log;
 class BetNResultWebhookValidator
 {
     protected float $totalTransactionAmount = 0;
+
     protected float $before_balance;
+
     protected float $after_balance;
+
     protected array $response;
+
     protected array $requestTransactions = [];
 
     protected function __construct(protected BetNResultWebhookRequest $request) {}
@@ -22,11 +26,11 @@ class BetNResultWebhookValidator
      */
     public function validate()
     {
-        if (!$this->isValidSignature()) {
+        if (! $this->isValidSignature()) {
             return $this->response(StatusCode::InvalidSignature);
         }
 
-        if (!$this->request->getMember()) {
+        if (! $this->request->getMember()) {
             return $this->response(StatusCode::InvalidPlayer);
         }
 
@@ -49,14 +53,14 @@ class BetNResultWebhookValidator
 
             $this->requestTransactions[] = $requestTransaction;
 
-            if ($requestTransaction->TranId && !$this->isNewTransaction($requestTransaction)) {
+            if ($requestTransaction->TranId && ! $this->isNewTransaction($requestTransaction)) {
                 return $this->response(StatusCode::DuplicateTransaction);
             }
 
             $this->totalTransactionAmount += $requestTransaction->BetAmount;
         }
 
-        if (!$this->hasEnoughBalance()) {
+        if (! $this->hasEnoughBalance()) {
             return $this->response(StatusCode::InsufficientBalance);
         }
 
@@ -85,7 +89,7 @@ class BetNResultWebhookValidator
         ]);
 
         // Generate signature
-        $signature = md5($method . $tranId . $requestTime . $operatorCode . $secretKey . $playerId);
+        $signature = md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
         Log::info('Generated signature', ['signature' => $signature]);
 
         return $this->request->getSignature() === $signature;
@@ -96,7 +100,7 @@ class BetNResultWebhookValidator
      */
     protected function isNewTransaction(BetNResultRequestTransaction $transaction)
     {
-        return !$this->getExistingTransaction($transaction);
+        return ! $this->getExistingTransaction($transaction);
     }
 
     /**
@@ -104,7 +108,7 @@ class BetNResultWebhookValidator
      */
     public function getExistingTransaction(BetNResultRequestTransaction $transaction)
     {
-        if (!isset($this->existingTransaction)) {
+        if (! isset($this->existingTransaction)) {
             $this->existingTransaction = BetNResult::where('tran_id', $transaction->TranId)->first();
         }
 
@@ -116,7 +120,7 @@ class BetNResultWebhookValidator
      */
     public function getAfterBalance()
     {
-        if (!isset($this->after_balance)) {
+        if (! isset($this->after_balance)) {
             $this->after_balance = $this->getBeforeBalance() + $this->totalTransactionAmount;
         }
 
@@ -128,7 +132,7 @@ class BetNResultWebhookValidator
      */
     public function getBeforeBalance()
     {
-        if (!isset($this->before_balance)) {
+        if (! isset($this->before_balance)) {
             $this->before_balance = $this->request->getMember()->wallet->balance;
         }
 

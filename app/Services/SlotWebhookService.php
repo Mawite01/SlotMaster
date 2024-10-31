@@ -16,8 +16,8 @@ class SlotWebhookService
         // $formattedAfterBalance = round($after_balance, 4);
         // $formattedBeforeBalance = round($before_balance, 4);
 
-    $formattedAfterBalance = number_format(round($after_balance, 4), 4, '.', '');
-    $formattedBeforeBalance = number_format(round($before_balance, 4), 4, '.', '');
+        $formattedAfterBalance = number_format(round($after_balance, 4), 4, '.', '');
+        $formattedBeforeBalance = number_format(round($before_balance, 4), 4, '.', '');
 
         // Map the response code to its exact description
         $description = match ($responseCode) {

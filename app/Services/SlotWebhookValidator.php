@@ -6,8 +6,8 @@ use App\Enums\StatusCode;
 use App\Http\Requests\Slot\SlotWebhookRequest;
 use App\Models\Admin\SeamlessTransaction;
 use App\Models\Wager;
-use Illuminate\Support\Facades\Log;
 use App\Services\RequestTransaction;
+use Illuminate\Support\Facades\Log;
 
 class SlotWebhookValidator
 {
@@ -123,7 +123,6 @@ class SlotWebhookValidator
 
         return $this->response;
     }
-
 
     public function fails()
     {
