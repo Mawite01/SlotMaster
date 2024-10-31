@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Webhook;
 use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BetNResultWebhookRequest;
+use App\Http\Requests\Slot\BetNResultWebhookRequest;
 use App\Models\Webhook\BetNResult;
 use App\Models\User;
 use App\Services\Webhook\BetNResultWebhookValidator;

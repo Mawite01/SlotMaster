@@ -3,7 +3,7 @@
 namespace App\Services\Webhook;
 
 use App\Enums\StatusCode;
-use App\Http\Requests\BetNResultWebhookRequest;
+use App\Http\Requests\Slot\BetNResultWebhookRequest;
 use App\Models\Webhook\BetNResult;
 use Illuminate\Support\Facades\Log;
 
