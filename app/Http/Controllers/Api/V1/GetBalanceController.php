@@ -44,8 +44,8 @@ class GetBalanceController extends Controller
 
             $response = SlotWebhookService::buildResponse(
                 StatusCode::OK,
-                $balance,  // Keep it as a number but rounded to 4 decimal places
-                $balance
+                $formattedBalance,  // Keep it as a number but rounded to 4 decimal places
+                $formattedBalance
             );
 
             Log::info('Returning response', ['response' => $response]);
