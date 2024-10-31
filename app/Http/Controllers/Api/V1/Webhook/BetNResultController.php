@@ -25,7 +25,7 @@ class BetNResultController extends Controller
             Log::info('Starting handleBetNResult method');
 
             // Validate player
-            $player = $request->getMember();
+            $player = $request->getUserId();
             if (!$player) {
                 Log::warning('Invalid player detected', ['PlayerId' => $request->getPlayerId()]);
                 return $this->buildErrorResponse(StatusCode::InvalidPlayer);
