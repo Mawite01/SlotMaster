@@ -31,7 +31,7 @@ class BetNResultController extends Controller
                 return $this->buildErrorResponse(StatusCode::InvalidPlayer);
             }
 
-            $oldBalance = $player->wallet->balance;
+            $oldBalance = $player->getUserId->balanceFloat;
             Log::info('Retrieved player balance', ['old_balance' => $oldBalance]);
 
             // Perform validation using the validator class
