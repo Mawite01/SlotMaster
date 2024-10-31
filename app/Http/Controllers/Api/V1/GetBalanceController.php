@@ -40,8 +40,7 @@ class GetBalanceController extends Controller
             $balance = $request->getMember()->balanceFloat;
 
             // Use round() to ensure 4 decimal places while keeping it a number
-            $formattedBalance = round($balance, 4);
-
+            $formattedBalance = number_format(round($balance, 4), 4, '.', '');
             $response = SlotWebhookService::buildResponse(
                 StatusCode::OK,
                 $formattedBalance,  // Keep it as a number but rounded to 4 decimal places
