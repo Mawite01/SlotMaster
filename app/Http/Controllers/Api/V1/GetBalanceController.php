@@ -37,7 +37,7 @@ class GetBalanceController extends Controller
             }
 
             Log::info('Validation passed, preparing balance response');
-            $balance = $request->getMember()->balanceFloat;
+            $balance = $request->getMember()->balance;
 
             // Use round() to ensure 4 decimal places while keeping it a number
             $formattedBalance = round($balance, 4);
