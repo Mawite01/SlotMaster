@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('game_code', 50);
             $table->decimal('bet_amount', 18, 4);   // Decimal with 4 precision
             $table->decimal('win_amount', 18, 4);   // Decimal with 4 precision
-            $table->decimal('net_win', 18, 4);      // Decimal with 4 precision
+            $table->decimal('net_win', 18, 4)->default(0.00);      // Decimal with 4 precision
             //$table->timestamp('tran_date_time')->useCurrent(); // ISO 8601 Standard timestamp
             //$table->timestamp('tran_date_time');
 

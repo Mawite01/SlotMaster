@@ -21,79 +21,107 @@ class CancelBetNResultController extends Controller
 
     public function handleCancelBetNResult(CancelBetNResultRequest $request): JsonResponse
     {
+        $transactions = $request->getTransactions();
+
         DB::beginTransaction();
         try {
-            Log::info('Starting handleCancelBetNResult method');
+            Log::info('Starting handleBetNResult method for multiple transactions');
 
-            // Validate player
-            $player = $request->getMember();
-            if (! $player) {
-                Log::warning('Invalid player detected', [
-                    'PlayerId' => $request->getPlayerId(),
+            foreach ($transactions as $transaction) {
+                // Get the player
+                $player = User::where('user_name', $transaction['PlayerId'])->first();
+                if (! $player) {
+                    Log::warning('Invalid player detected', [
+                        'PlayerId' => $transaction['PlayerId'],
+                    ]);
+
+                    return PlaceBetWebhookService::buildResponse(
+                        StatusCode::InvalidPlayerPassword,
+                        0,
+                        0
+                    );
+                }
+
+                // Validate transaction signature
+                $signature = $this->generateSignature($transaction);
+                if ($signature !== $transaction['Signature']) {
+                    Log::warning('Signature validation failed', [
+                        'transaction' => $transaction,
+                        'generated_signature' => $signature,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                }
+
+                // Check for duplicate transaction
+                $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
+                if ($existingTransaction) {
+                    Log::warning('Duplicate TranId detected', [
+                        'TranId' => $transaction['TranId'],
+                    ]);
+                    $Balance = $request->getMember()->balanceFloat;
+
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                }
+
+                $PlayerBalance = $request->getMember()->balanceFloat;
+
+                // Check for sufficient balance
+                if ($transaction['BetAmount'] > $PlayerBalance) {
+                    Log::warning('Insufficient balance detected', [
+                        'BetAmount' => $transaction['BetAmount'],
+                        'balance' => $PlayerBalance,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InsufficientBalance, $PlayerBalance);
+                }
+
+                // Process the bet
+                $this->processTransfer(
+                    User::adminUser(), // Assuming admin user as the receiving party
+                    $player,
+                    TransactionName::Refund,
+                    $transaction['BetAmount']
+                );
+
+                $request->getMember()->wallet->refreshBalance();
+
+                $NewBalance = $request->getMember()->balanceFloat;
+
+                // Create the transaction record
+                BetNResult::create([
+                    'user_id' => $player->id,
+                    'operator_id' => $transaction['OperatorId'],
+                    'request_date_time' => $transaction['RequestDateTime'],
+                    'signature' => $transaction['Signature'],
+                    'player_id' => $transaction['PlayerId'],
+                    'currency' => $transaction['Currency'],
+                    'tran_id' => $transaction['TranId'],
+                    'game_code' => $transaction['GameCode'],
+                    'bet_amount' => $transaction['BetAmount'],
+                    'win_amount' => $transaction['WinAmount'],
+                    'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
+                    'status' => 'cancelled',
+                    'cancelled_at' => now(),
                 ]);
 
-                return PlaceBetWebhookService::buildResponse(StatusCode::InvalidPlayerPassword, 0, 0);
+                Log::info('Transaction Refund processed successfully', ['TranId' => $transaction['TranId']]);
             }
-
-            // Perform validation using the validator class
-            $validator = $request->check();
-            Log::info('Validator check passed');
-            // if ($validator->fails()) {
-            //     Log::warning('Validation failed');
-            //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
-            // }
-
-            if ($validator !== $request->getSignature()) {
-                Log::warning('Validation failed');
-
-                return $this->buildErrorResponse(StatusCode::InvalidSignature);
-            }
-
-            // Check for existing transaction with the provided TranId
-            $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
-            if (! $existingTransaction) {
-                Log::warning('Transaction not found', [
-                    'tran_id' => $request->getTranId(),
-                ]);
-
-                return $this->buildErrorResponse(StatusCode::BetTransactionNotFound);
-            }
-
-            // Ensure idempotency
-            if ($existingTransaction->status === 'cancelled') {
-                Log::info('Transaction already cancelled', [
-                    'tran_id' => $request->getTranId(),
-                ]);
-
-                $balance = $player->wallet->balanceFloat;
-
-                return $this->buildSuccessResponse($balance);
-            }
-
-            // Process the refund
-            $this->processTransfer(User::adminUser(), $player, TransactionName::Refund, $existingTransaction->bet_amount);
-
-            // Update transaction status to "cancelled"
-            $existingTransaction->update([
-                'status' => 'cancelled',
-                'cancelled_at' => now(),
-            ]);
-
-            $newBalance = $player->wallet->refreshBalance()->balance;
-            Log::info('Transaction cancelled successfully', ['new_balance' => $newBalance]);
 
             DB::commit();
+            Log::info('All transactions Refund committed successfully');
 
-            return $this->buildSuccessResponse($newBalance);
+            // Build a successful response with the final balance of the last player
+            return $this->buildSuccessResponse($NewBalance);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to handle CancelBetNResult', [
+            Log::error('Failed to handle BetNResult', [
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
             ]);
 
-            return response()->json(['message' => 'Failed to handle CancelBetNResult'], 500);
+            return response()->json(['message' => 'Failed to handle BetNResult'], 500);
         }
     }
 
@@ -101,8 +129,7 @@ class CancelBetNResultController extends Controller
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
-            'Description' => 'Success',
-            'ResponseDateTime' => Carbon::now()->format('Y-m-d H:i:s'),
+            'Description' => 'OK',
             'Balance' => round($newBalance, 4),
         ]);
     }
@@ -114,5 +141,17 @@ class CancelBetNResultController extends Controller
             'Description' => $statusCode->name,
             'Balance' => round($balance, 4),
         ]);
+    }
+
+    private function generateSignature(array $transaction): string
+    {
+        $method = 'CancelBetNResult';
+        $tranId = $transaction['TranId'];
+        $requestTime = $transaction['RequestDateTime'];
+        $operatorCode = $transaction['OperatorId'];
+        $secretKey = config('game.api.secret_key'); // Fetch secret key from config
+        $playerId = $transaction['PlayerId'];
+
+        return md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
     }
 }
