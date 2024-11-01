@@ -24,7 +24,7 @@ class CancelBetNResultWebhookValidator
     /**
      * Main validation function
      */
-    public function validate()
+     public function validate()
     {
         if (! $this->isValidSignature()) {
             return $this->response(StatusCode::InvalidSignature);
@@ -68,7 +68,7 @@ class CancelBetNResultWebhookValidator
     /**
      * Validate the request signature
      */
-    protected function isValidSignature(): bool
+    protected function isValidSignature()
     {
         $method = $this->request->getMethodName();
         $tranId = $this->request->getTranId();
