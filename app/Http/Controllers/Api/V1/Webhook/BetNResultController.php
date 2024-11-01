@@ -14,7 +14,7 @@ use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Carbon\Carbon;
 class BetNResultController extends Controller
 {
     use UseWebhook;
@@ -83,6 +83,8 @@ class BetNResultController extends Controller
 
             $newBalance = $request->getMember()->balanceFloat;
 
+             // Convert TranDateTime to MySQL format
+        $tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
 
             // Create the transaction record
             BetNResult::create([
@@ -97,7 +99,7 @@ class BetNResultController extends Controller
                 'bet_amount' => $request->getBetAmount(),
                 'win_amount' => $request->getWinAmount(),
                 'net_win' => $request->getNetWin(),
-                'tran_date_time' => $request->getTranDateTime(),
+                'tran_date_time' => $tranDateTime,
                 'auth_token' => $request->getAuthToken(),
                 'old_balance' => round($oldBalance, 4),
                 'new_balance' => round($newBalance, 4),
