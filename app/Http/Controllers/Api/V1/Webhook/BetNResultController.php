@@ -11,10 +11,11 @@ use App\Models\Webhook\BetNResult;
 use App\Services\PlaceBetWebhookService;
 use App\Services\Webhook\BetNResultWebhookValidator;
 use App\Traits\UseWebhook;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+
 class BetNResultController extends Controller
 {
     use UseWebhook;
@@ -63,7 +64,11 @@ class BetNResultController extends Controller
 
             // Check for duplicate TranId
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
-            Log::info('Retrieved player TransationID', ['TransationID' => $existingTransaction]);
+            Log::info('Retrieved player TransactionID', ['TransactionID' => $existingTransaction ? $existingTransaction->tran_id : 'No transaction found']);
+
+            DB::enableQueryLog();
+            $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
+            Log::info('Query log:', DB::getQueryLog());
 
             if ($existingTransaction) {
                 Log::warning('Duplicate TranId detected', ['tran_id' => $request->getTranId()]);
@@ -82,14 +87,15 @@ class BetNResultController extends Controller
             //$newBalance = $request->getMember()->refreshBalance()->balance;
             $BeforeBalance = $request->getMember()->balanceFloat;
 
-
             $request->getMember()->wallet->refreshBalance();
 
             $newBalance = $request->getMember()->balanceFloat;
 
-             // Convert TranDateTime to MySQL format
-        //$tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
-        $tranDateTime = Carbon::createFromFormat('Y-m-d\TH:i:s\Z', $request->getTranDateTime())->format('Y-m-d H:i:s');
+            // Convert TranDateTime to MySQL format
+            //$tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
+            $tranDateTime = Carbon::createFromFormat('Y-m-d\TH:i:s\Z', $request->getTranDateTime())->format('Y-m-d H:i:s');
+
+            Log::info('Storing transaction with TranId', ['TranId' => $request->getTranId()]);
 
             // Create the transaction record
             BetNResult::create([
