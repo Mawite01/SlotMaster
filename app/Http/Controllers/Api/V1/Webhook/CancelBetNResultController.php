@@ -118,8 +118,7 @@ class CancelBetNResultController extends Controller
         return response()->json([
             'Status' => $statusCode->value,
             'Description' => $statusCode->name,
-            'Balance' => round($balance, 4),
-            //'AfterBalance' => round($balance, 4),
+            'Balance' => round($balance, 4)
         ]);
     }
 }

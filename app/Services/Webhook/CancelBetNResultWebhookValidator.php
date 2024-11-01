@@ -195,9 +195,16 @@ class CancelBetNResultWebhookValidator
     /**
      * Check if validation failed
      */
+    // public function fails()
+    // {
+    //     return isset($this->response);
+    // }
     public function fails()
     {
-        return isset($this->response);
+        $fails = isset($this->response) && ! empty($this->response);
+        Log::info('Checking if validation fails', ['fails' => $fails]);
+
+        return $fails;
     }
 
     /**
