@@ -37,12 +37,18 @@ class CancelBetNResultController extends Controller
             // Perform validation using the validator class
             $validator = $request->check();
             Log::info('Validator check passed');
-            if ($validator !== $request->getSignature()) {
+            if (isset($validator['Status']) && $validator['Status'] !== StatusCode::OK->value) {
                 Log::warning('Validation failed', ['validation_response' => $validator]);
                 return response()->json($validator);
-            }else{
-                return $validator;
             }
+
+
+            // if ($validator !== $request->getSignature()) {
+            //     Log::warning('Validation failed', ['validation_response' => $validator]);
+            //     return response()->json($validator);
+            // }else{
+            //     return $validator;
+            // }
 
             // Check for existing transaction with the provided TranId
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
