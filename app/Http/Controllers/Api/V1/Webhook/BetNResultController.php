@@ -146,7 +146,7 @@ class BetNResultController extends Controller
             'Status' => StatusCode::OK->value,
             'Description' => 'OK',
             //'BeforeBalance' => round($oldBalance, 4),
-            'AfterBalance' => round($newBalance, 4),
+            'Balance' => round($newBalance, 4),
         ]);
     }
 
