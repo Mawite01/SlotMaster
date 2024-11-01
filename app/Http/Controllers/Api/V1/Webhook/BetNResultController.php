@@ -114,7 +114,7 @@ class BetNResultController extends Controller
             Log::info('Transaction committed successfully');
 
             // Build a successful response
-            return $this->buildSuccessResponse($newBalance, $oldBalance);
+            return $this->buildSuccessResponse($newBalance);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle BetNResult', [
@@ -130,12 +130,12 @@ class BetNResultController extends Controller
     /**
      * Builds a success response.
      */
-    private function buildSuccessResponse(float $newBalance, float $oldBalance): JsonResponse
+    private function buildSuccessResponse(float $newBalance): JsonResponse
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
             'Description' => 'OK',
-            'BeforeBalance' => round($oldBalance, 4),
+            //'BeforeBalance' => round($oldBalance, 4),
             'AfterBalance' => round($newBalance, 4),
         ]);
     }
