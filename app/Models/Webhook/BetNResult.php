@@ -26,6 +26,8 @@ class BetNResult extends Model
         'net_win',
         'tran_date_time',
         'auth_token',
+        'status',
+        'cancelled_at'
     ];
 
     public function user()
