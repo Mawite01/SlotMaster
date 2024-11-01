@@ -13,8 +13,6 @@ use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
-
 
 class CancelBetNResultController extends Controller
 {
@@ -33,19 +31,15 @@ class CancelBetNResultController extends Controller
                     'PlayerId' => $request->getPlayerId(),
                 ]);
 
-                return PlaceBetWebhookService::buildResponse(
-                    StatusCode::InvalidPlayerPassword,
-                    0,
-                    0
-                );
+                return PlaceBetWebhookService::buildResponse(StatusCode::InvalidPlayerPassword, 0, 0);
             }
 
+            // Perform validation using the validator class
             $validator = $request->check();
             Log::info('Validator check passed');
-            if ($validator->fails()) {
-                Log::warning('Validation failed');
-
-                return $this->buildErrorResponse(StatusCode::InvalidSignature);
+            if (isset($validator['Status']) && $validator['Status'] !== StatusCode::OK->value) {
+                Log::warning('Validation failed', ['validation_response' => $validator]);
+                return response()->json($validator);
             }
 
             // Check for existing transaction with the provided TranId
@@ -64,19 +58,12 @@ class CancelBetNResultController extends Controller
                     'tran_id' => $request->getTranId(),
                 ]);
 
-                //return $this->buildSuccessResponse($player->balanceFloat);
-            $Balance = $request->getMember()->balanceFloat;
-            return $this->buildSuccessResponse($Balance);
-
+                $balance = $player->wallet->balanceFloat;
+                return $this->buildSuccessResponse($balance);
             }
 
             // Process the refund
-            $this->processTransfer(
-                User::adminUser(), // Admin as the source of the refund
-                $player,
-                TransactionName::Refund,
-                $existingTransaction->bet_amount
-            );
+            $this->processTransfer(User::adminUser(), $player, TransactionName::Refund, $existingTransaction->bet_amount);
 
             // Update transaction status to "cancelled"
             $existingTransaction->update([
@@ -84,10 +71,7 @@ class CancelBetNResultController extends Controller
                 'cancelled_at' => now(),
             ]);
 
-            $request->getMember()->wallet->refreshBalance();
-
-            $newBalance = $request->getMember()->balanceFloat;
-
+            $newBalance = $player->wallet->refreshBalance()->balance;
             Log::info('Transaction cancelled successfully', ['new_balance' => $newBalance]);
 
             DB::commit();
@@ -109,7 +93,7 @@ class CancelBetNResultController extends Controller
         return response()->json([
             'Status' => StatusCode::OK->value,
             'Description' => 'Transaction cancelled successfully',
-            'AfterBalance' => round($newBalance, 4),
+            'Balance' => round($newBalance, 4),
         ]);
     }
 
@@ -118,7 +102,7 @@ class CancelBetNResultController extends Controller
         return response()->json([
             'Status' => $statusCode->value,
             'Description' => $statusCode->name,
-            'Balance' => round($balance, 4)
+            'Balance' => round($balance, 4),
         ]);
     }
 }

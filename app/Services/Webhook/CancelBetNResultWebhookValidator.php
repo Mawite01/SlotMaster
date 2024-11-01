@@ -68,7 +68,7 @@ class CancelBetNResultWebhookValidator
     /**
      * Validate the request signature
      */
-    protected function isValidSignature()
+    protected function isValidSignature(): bool
     {
         $method = $this->request->getMethodName();
         $tranId = $this->request->getTranId();
@@ -153,13 +153,6 @@ class CancelBetNResultWebhookValidator
         return $this->requestTransactions;
     }
 
-    /**
-     * Retrieve the secret key for signature validation
-     */
-    // protected function getSecretKey()
-    // {
-    //     return config('game.api.secret_key');
-    // }
 
     protected function getSecretKey()
     {
@@ -172,16 +165,24 @@ class CancelBetNResultWebhookValidator
     /**
      * Build response with the given status code and balance details
      */
-    protected function response(StatusCode $responseCode)
+    // protected function response(StatusCode $responseCode)
+    // {
+    //     $this->response = [
+    //         'Status' => $responseCode->value,
+    //         'Description' => $responseCode->name,
+    //         'AfterBalance' => $this->getAfterBalance(),
+    //         'BeforeBalance' => $this->getBeforeBalance(),
+    //     ];
+
+    //     return $this;
+    // }
+
+    protected function response(StatusCode $responseCode): array
     {
-        $this->response = [
+        return [
             'Status' => $responseCode->value,
             'Description' => $responseCode->name,
-            'AfterBalance' => $this->getAfterBalance(),
-            'BeforeBalance' => $this->getBeforeBalance(),
         ];
-
-        return $this;
     }
 
     /**
@@ -195,10 +196,7 @@ class CancelBetNResultWebhookValidator
     /**
      * Check if validation failed
      */
-    // public function fails()
-    // {
-    //     return isset($this->response);
-    // }
+
     public function fails()
     {
         $fails = isset($this->response) && ! empty($this->response);

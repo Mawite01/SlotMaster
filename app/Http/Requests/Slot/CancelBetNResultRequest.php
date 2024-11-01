@@ -40,9 +40,6 @@ class CancelBetNResultRequest extends FormRequest
         return $validator;
     }
 
-
-
-
     public function getOperatorId() { return $this->get('OperatorId'); }
     public function getRequestDateTime() { return $this->get('RequestDateTime'); }
     public function getSignature() { return $this->get('Signature'); }
