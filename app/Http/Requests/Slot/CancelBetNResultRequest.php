@@ -5,6 +5,8 @@ namespace App\Http\Requests\Slot;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use App\Services\Webhook\CancelBetNResultWebhookValidator;
+
 
 class CancelBetNResultRequest extends FormRequest
 {
@@ -30,6 +32,14 @@ class CancelBetNResultRequest extends FormRequest
             'TranDateTime' => 'required|date',
         ];
     }
+
+    public function check()
+    {
+        $validator = CancelBetNResultWebhookValidator::make($this)->validate();
+
+        return $validator;
+    }
+
 
 
 
