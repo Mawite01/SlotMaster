@@ -83,4 +83,40 @@ class CancelBetNResultRequest extends FormRequest
         return str($this->url())->explode('/')->last();
     }
 
+    public function getTransactions()
+    {
+        // Check if there is a 'transactions' key in the request, which could indicate an array of transactions
+        $transactions = $this->input('transactions', []);
+
+        if (empty($transactions)) {
+            // If no 'transactions' key is found, assume single transaction structure based on individual fields
+            $transactions = [
+                [
+                    'OperatorId' => $this->getOperatorId(),
+                    'RequestDateTime' => $this->getRequestDateTime(),
+                    'Signature' => $this->getSignature(),
+                    'PlayerId' => $this->getPlayerId(),
+                    'Currency' => $this->getCurrency(),
+                    'TranId' => $this->getTranId(),
+                    'GameCode' => $this->getGameCode(),
+                    'BetAmount' => $this->getBetAmount(),
+                    'WinAmount' => $this->getWinAmount(),
+                    'TranDateTime' => $this->getTranDateTime()
+                ],
+            ];
+        } elseif (isset($transactions['OperatorId'])) {
+            // If 'transactions' is an associative array (indicating a single transaction), wrap it in an array
+            $transactions = [
+                $transactions,
+            ];
+        }
+
+        // Log the transactions for debugging
+        Log::info('Retrieved Transactions', [
+            'transactions' => $transactions,
+        ]);
+
+        return $transactions;
+    }
+
 }
