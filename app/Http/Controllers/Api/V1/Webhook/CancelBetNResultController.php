@@ -10,10 +10,10 @@ use App\Models\User;
 use App\Models\Webhook\BetNResult;
 use App\Services\PlaceBetWebhookService;
 use App\Traits\UseWebhook;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class CancelBetNResultController extends Controller
 {
@@ -27,7 +27,7 @@ class CancelBetNResultController extends Controller
 
             // Validate player
             $player = $request->getMember();
-            if (!$player) {
+            if (! $player) {
                 Log::warning('Invalid player detected', [
                     'PlayerId' => $request->getPlayerId(),
                 ]);
@@ -38,14 +38,20 @@ class CancelBetNResultController extends Controller
             // Perform validation using the validator class
             $validator = $request->check();
             Log::info('Validator check passed');
-            if ($validator->fails()) {
+            // if ($validator->fails()) {
+            //     Log::warning('Validation failed');
+            //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+            // }
+
+            if ($validator !== $request->getSignature()) {
                 Log::warning('Validation failed');
+
                 return $this->buildErrorResponse(StatusCode::InvalidSignature);
             }
 
             // Check for existing transaction with the provided TranId
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
-            if (!$existingTransaction) {
+            if (! $existingTransaction) {
                 Log::warning('Transaction not found', [
                     'tran_id' => $request->getTranId(),
                 ]);
@@ -60,6 +66,7 @@ class CancelBetNResultController extends Controller
                 ]);
 
                 $balance = $player->wallet->balanceFloat;
+
                 return $this->buildSuccessResponse($balance);
             }
 
@@ -76,6 +83,7 @@ class CancelBetNResultController extends Controller
             Log::info('Transaction cancelled successfully', ['new_balance' => $newBalance]);
 
             DB::commit();
+
             return $this->buildSuccessResponse($newBalance);
         } catch (\Exception $e) {
             DB::rollBack();

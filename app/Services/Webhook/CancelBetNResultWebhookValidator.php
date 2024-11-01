@@ -24,7 +24,7 @@ class CancelBetNResultWebhookValidator
     /**
      * Main validation function
      */
-     public function validate()
+    public function validate()
     {
         if (! $this->isValidSignature()) {
             return $this->response(StatusCode::InvalidSignature);
@@ -153,7 +153,6 @@ class CancelBetNResultWebhookValidator
         return $this->requestTransactions;
     }
 
-
     protected function getSecretKey()
     {
         $secretKey = config('game.api.secret_key');
@@ -188,7 +187,6 @@ class CancelBetNResultWebhookValidator
     /**
      * Check if validation failed
      */
-
     public function fails()
     {
         $fails = isset($this->response) && ! empty($this->response);

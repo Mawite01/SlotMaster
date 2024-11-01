@@ -9,7 +9,6 @@ use App\Http\Requests\Slot\BetNResultWebhookRequest;
 use App\Models\User;
 use App\Models\Webhook\BetNResult;
 use App\Services\PlaceBetWebhookService;
-use App\Services\Webhook\BetNResultWebhookValidator;
 use App\Traits\UseWebhook;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -22,109 +21,100 @@ class BetNResultController extends Controller
 
     public function handleBetNResult(BetNResultWebhookRequest $request): JsonResponse
     {
+        $transactions = $request->getTransactions();
+
         DB::beginTransaction();
         try {
-            Log::info('Starting handleBetNResult method');
+            Log::info('Starting handleBetNResult method for multiple transactions');
 
-            // Validate player
-            $player = $request->getMember();
-            if (! $player) {
-                Log::warning('Invalid player detected', [
-                    'PlayerId' => $request->getPlayerId(),
-                ]);
+            foreach ($transactions as $transaction) {
+                // Get the player
+                $player = User::where('user_name', $transaction['PlayerId'])->first();
+                if (! $player) {
+                    Log::warning('Invalid player detected', [
+                        'PlayerId' => $transaction['PlayerId'],
+                    ]);
 
-                // Return Invalid Player response
-                return PlaceBetWebhookService::buildResponse(
-                    StatusCode::InvalidPlayerPassword,
-                    0, // Balance is 0 in case of invalid player
-                    0
+                    return PlaceBetWebhookService::buildResponse(
+                        StatusCode::InvalidPlayerPassword,
+                        0,
+                        0
+                    );
+                }
+
+                // Validate transaction signature
+                $signature = $this->generateSignature($transaction);
+                if ($signature !== $transaction['Signature']) {
+                    Log::warning('Signature validation failed', [
+                        'transaction' => $transaction,
+                        'generated_signature' => $signature,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                }
+
+                // Check for duplicate transaction
+                $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
+                if ($existingTransaction) {
+                    Log::warning('Duplicate TranId detected', [
+                        'TranId' => $transaction['TranId'],
+                    ]);
+                    $Balance = $request->getMember()->balanceFloat;
+
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                }
+
+                $PlayerBalance = $request->getMember()->balanceFloat;
+
+                // Check for sufficient balance
+                if ($transaction['BetAmount'] > $PlayerBalance) {
+                    Log::warning('Insufficient balance detected', [
+                        'BetAmount' => $transaction['BetAmount'],
+                        'balance' => $PlayerBalance,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InsufficientBalance, $PlayerBalance);
+                }
+
+                // Process the bet
+                $this->processTransfer(
+                    $player,
+                    User::adminUser(), // Assuming admin user as the receiving party
+                    TransactionName::Stake,
+                    $transaction['BetAmount']
                 );
-            }
 
-            $oldBalance = $request->getMember()->balanceFloat;
-            Log::info('Retrieved player balance', ['old_balance' => $oldBalance]);
+                $request->getMember()->wallet->refreshBalance();
 
-            // Perform validation using the validator class
-            //$validator = BetNResultWebhookValidator::make($request)->validate();
-            $validator = $request->check();
-            Log::info('Validator check passed');
-            if ($validator->fails()) {
-                Log::warning('Validation failed');
+                $NewBalance = $request->getMember()->balanceFloat;
 
-                return $this->buildErrorResponse(StatusCode::InvalidSignature);
-            }
-
-            // Check for sufficient balance
-            if ($request->getBetAmount() > $oldBalance) {
-                Log::warning('Insufficient balance detected', [
-                    'bet_amount' => $request->getBetAmount(),
-                    'balance' => $oldBalance,
+                // Create the transaction record
+                BetNResult::create([
+                    'user_id' => $player->id,
+                    'operator_id' => $transaction['OperatorId'],
+                    'request_date_time' => $transaction['RequestDateTime'],
+                    'signature' => $transaction['Signature'],
+                    'player_id' => $transaction['PlayerId'],
+                    'currency' => $transaction['Currency'],
+                    'tran_id' => $transaction['TranId'],
+                    'game_code' => $transaction['GameCode'],
+                    'bet_amount' => $transaction['BetAmount'],
+                    'win_amount' => $transaction['WinAmount'],
+                    'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
+                    'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
+                    'auth_token' => $transaction['AuthToken'] ?? 'default_password',
+                    // 'old_balance' => round($player->wallet->balanceFloat, 4),
+                    //'new_balance' => round($player->wallet->refreshBalance()->balance, 4),
                 ]);
 
-                return $this->buildErrorResponse(StatusCode::InsufficientBalance, $oldBalance);
+                Log::info('Transaction processed successfully', ['TranId' => $transaction['TranId']]);
             }
-
-            // Check for duplicate TranId
-            $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
-            Log::info('Retrieved player TransactionID', ['TransactionID' => $existingTransaction ? $existingTransaction->tran_id : 'No transaction found']);
-
-            DB::enableQueryLog();
-            $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
-            Log::info('Query log:', DB::getQueryLog());
-
-            if ($existingTransaction) {
-                Log::warning('Duplicate TranId detected', ['tran_id' => $request->getTranId()]);
-
-                return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $oldBalance);
-            }
-
-            // Process transfer using the processTransfer trait method
-            $this->processTransfer(
-                $player,
-                User::adminUser(), // Assuming admin user as the receiving party
-                TransactionName::Stake, // Using TransactionName enum for transaction type
-                $request->getBetAmount()
-            );
-
-            //$newBalance = $request->getMember()->refreshBalance()->balance;
-            $BeforeBalance = $request->getMember()->balanceFloat;
-
-            $request->getMember()->wallet->refreshBalance();
-
-            $newBalance = $request->getMember()->balanceFloat;
-
-            // Convert TranDateTime to MySQL format
-            //$tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
-            $tranDateTime = Carbon::createFromFormat('Y-m-d\TH:i:s\Z', $request->getTranDateTime())->format('Y-m-d H:i:s');
-
-            Log::info('Storing transaction with TranId', ['TranId' => $request->getTranId()]);
-
-            // Create the transaction record
-            BetNResult::create([
-                'user_id' => $request->getUserId(),
-                'operator_id' => $request->getOperatorId(),
-                'request_date_time' => $request->getRequestDateTime(),
-                'signature' => $request->getSignature(),
-                'player_id' => $request->getPlayerId(),
-                'currency' => $request->getCurrency(),
-                'tran_id' => $request->getTranId(),
-                'game_code' => $request->getGameCode(),
-                'bet_amount' => $request->getBetAmount(),
-                'win_amount' => $request->getWinAmount(),
-                'net_win' => $request->getNetWin(),
-                'tran_date_time' => $tranDateTime,
-                'auth_token' => $request->getAuthToken(),
-                //'old_balance' => round($BeforeBalance, 4),
-                //'new_balance' => round($newBalance, 4),
-            ]);
-
-            Log::info('Transaction created successfully', ['new_balance' => $newBalance]);
 
             DB::commit();
-            Log::info('Transaction committed successfully');
+            Log::info('All transactions committed successfully');
 
-            // Build a successful response
-            return $this->buildSuccessResponse($newBalance);
+            // Build a successful response with the final balance of the last player
+            return $this->buildSuccessResponse($NewBalance);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle BetNResult', [
@@ -137,29 +127,33 @@ class BetNResultController extends Controller
         }
     }
 
-    /**
-     * Builds a success response.
-     */
     private function buildSuccessResponse(float $newBalance): JsonResponse
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
             'Description' => 'OK',
-            //'BeforeBalance' => round($oldBalance, 4),
             'Balance' => round($newBalance, 4),
         ]);
     }
 
-    /**
-     * Builds an error response with a given status code.
-     */
     private function buildErrorResponse(StatusCode $statusCode, float $balance = 0): JsonResponse
     {
         return response()->json([
             'Status' => $statusCode->value,
             'Description' => $statusCode->name,
-            'BeforeBalance' => round($balance, 4),
-            'AfterBalance' => round($balance, 4),
+            'Balance' => round($balance, 4),
         ]);
+    }
+
+    private function generateSignature(array $transaction): string
+    {
+        $method = 'BetNResult';
+        $tranId = $transaction['TranId'];
+        $requestTime = $transaction['RequestDateTime'];
+        $operatorCode = $transaction['OperatorId'];
+        $secretKey = config('game.api.secret_key'); // Fetch secret key from config
+        $playerId = $transaction['PlayerId'];
+
+        return md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
     }
 }

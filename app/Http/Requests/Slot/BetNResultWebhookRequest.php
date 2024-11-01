@@ -56,7 +56,6 @@ class BetNResultWebhookRequest extends FormRequest
         return $validator;
     }
 
-
     public function getOperatorId()
     {
         return $this->get('OperatorId');

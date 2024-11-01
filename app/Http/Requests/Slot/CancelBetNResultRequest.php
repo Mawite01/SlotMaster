@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Slot;
 
 use App\Models\User;
+use App\Services\Webhook\CancelBetNResultWebhookValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
-use App\Services\Webhook\CancelBetNResultWebhookValidator;
-
 
 class CancelBetNResultRequest extends FormRequest
 {
@@ -40,15 +39,50 @@ class CancelBetNResultRequest extends FormRequest
         return $validator;
     }
 
-    public function getOperatorId() { return $this->get('OperatorId'); }
-    public function getRequestDateTime() { return $this->get('RequestDateTime'); }
-    public function getSignature() { return $this->get('Signature'); }
-    public function getCurrency() { return $this->get('Currency'); }
-    public function getTranId() { return $this->get('TranId'); }
-    public function getGameCode() { return $this->get('GameCode'); }
-    public function getBetAmount() { return $this->get('BetAmount'); }
-    public function getWinAmount() { return $this->get('WinAmount'); }
-    public function getTranDateTime() { return $this->get('TranDateTime'); }
+    public function getOperatorId()
+    {
+        return $this->get('OperatorId');
+    }
+
+    public function getRequestDateTime()
+    {
+        return $this->get('RequestDateTime');
+    }
+
+    public function getSignature()
+    {
+        return $this->get('Signature');
+    }
+
+    public function getCurrency()
+    {
+        return $this->get('Currency');
+    }
+
+    public function getTranId()
+    {
+        return $this->get('TranId');
+    }
+
+    public function getGameCode()
+    {
+        return $this->get('GameCode');
+    }
+
+    public function getBetAmount()
+    {
+        return $this->get('BetAmount');
+    }
+
+    public function getWinAmount()
+    {
+        return $this->get('WinAmount');
+    }
+
+    public function getTranDateTime()
+    {
+        return $this->get('TranDateTime');
+    }
 
     public function getMember()
     {
@@ -75,6 +109,7 @@ class CancelBetNResultRequest extends FormRequest
     {
         return $this->get('PlayerId');
     }
+
     public function getMethodName()
     {
         return str($this->url())->explode('/')->last();
@@ -98,7 +133,7 @@ class CancelBetNResultRequest extends FormRequest
                     'GameCode' => $this->getGameCode(),
                     'BetAmount' => $this->getBetAmount(),
                     'WinAmount' => $this->getWinAmount(),
-                    'TranDateTime' => $this->getTranDateTime()
+                    'TranDateTime' => $this->getTranDateTime(),
                 ],
             ];
         } elseif (isset($transactions['OperatorId'])) {
@@ -115,5 +150,4 @@ class CancelBetNResultRequest extends FormRequest
 
         return $transactions;
     }
-
 }
