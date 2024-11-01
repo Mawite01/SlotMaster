@@ -2,21 +2,20 @@
 
 namespace App\Http\Requests\Slot;
 
-use App\Models\User;
-use App\Services\Webhook\BetNResultWebhookValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use App\Services\Webhook\BetWebhookValidator;
+use App\Models\User;
 
-class BetNResultWebhookRequest extends FormRequest
+
+class BetWebhookRequest extends FormRequest
 {
-    private ?User $member;
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -27,24 +26,13 @@ class BetNResultWebhookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'OperatorId' => 'required|string|max:20',
-            'RequestDateTime' => 'required|string|max:50',
-            'Signature' => 'required|string|max:50',
-            'PlayerId' => 'required|string|max:50',
-            'Currency' => 'required|string|max:5',
-            'TranId' => 'required|string|max:30',
-            'GameCode' => 'required|string|max:50',
-            'BetAmount' => 'required|numeric',
-            'WinAmount' => 'nullable|numeric',
-            'NetWin' => 'nullable|numeric',
-            'TranDateTime' => 'required|date',
-            'AuthToken' => 'nullable|string|max:500',
+            //
         ];
     }
 
     public function check()
     {
-        $validator = BetNResultWebhookValidator::make($this)->validate();
+        $validator = BetWebhookValidator::make($this)->validate();
 
         return $validator;
     }
@@ -58,6 +46,8 @@ class BetNResultWebhookRequest extends FormRequest
     {
         return $this->get('RequestDateTime');
     }
+     public function getRoundId() { return $this->get('RoundId'); }
+    public function getBetId() { return $this->get('BetId'); }
 
     public function getSignature()
     {
@@ -170,6 +160,4 @@ class BetNResultWebhookRequest extends FormRequest
 
         return $transactions;
     }
-
-
 }

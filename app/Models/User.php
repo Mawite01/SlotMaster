@@ -20,6 +20,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Webhook\Bet;
 
 class User extends Authenticatable implements Wallet
 {
@@ -195,5 +196,10 @@ class User extends Authenticatable implements Wallet
     public function transactions(): MorphMany
     {
         return $this->morphMany(Transaction::class, 'payable');
+    }
+
+     public function bets()
+    {
+        return $this->hasMany(Bet::class, 'user_id');
     }
 }
