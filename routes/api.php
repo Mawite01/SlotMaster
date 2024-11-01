@@ -39,4 +39,4 @@ Route::get('popup-ads-banner', [BannerController::class, 'AdsBannerIndex']);
 
 Route::post('GetBalance', [GetBalanceController::class, 'getBalance']);
 Route::post('BetNResult', [BetNResultController::class, 'handleBetNResult']);
-Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleBetNResult']);
+Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleCancelBetNResult']);
