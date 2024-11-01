@@ -78,6 +78,8 @@ class BetNResultController extends Controller
             );
 
             //$newBalance = $request->getMember()->refreshBalance()->balance;
+            $BeforeBalance = $request->getMember()->balanceFloat;
+
 
             $request->getMember()->wallet->refreshBalance();
 
@@ -102,7 +104,7 @@ class BetNResultController extends Controller
                 'net_win' => $request->getNetWin(),
                 'tran_date_time' => $tranDateTime,
                 'auth_token' => $request->getAuthToken(),
-                'old_balance' => round($oldBalance, 4),
+                'old_balance' => round($BeforeBalance, 4),
                 'new_balance' => round($newBalance, 4),
             ]);
 
