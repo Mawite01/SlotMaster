@@ -46,7 +46,6 @@ class CancelBetNResultRequest extends FormRequest
     public function getOperatorId() { return $this->get('OperatorId'); }
     public function getRequestDateTime() { return $this->get('RequestDateTime'); }
     public function getSignature() { return $this->get('Signature'); }
-    public function getPlayerId() { return $this->get('PlayerId'); }
     public function getCurrency() { return $this->get('Currency'); }
     public function getTranId() { return $this->get('TranId'); }
     public function getGameCode() { return $this->get('GameCode'); }
@@ -56,7 +55,32 @@ class CancelBetNResultRequest extends FormRequest
 
     public function getMember()
     {
-        $playerId = $this->getPlayerId();
+        $playerId = $this->getMemberName();
+
         return User::where('user_name', $playerId)->first();
     }
+
+    public function getMemberName()
+    {
+        return $this->get('PlayerId');
+    }
+
+    public function getUserId()
+    {
+        $player = $this->getPlayerId();
+
+        $user = User::where('user_name', $player)->first();
+
+        return $user->id;
+    }
+
+    public function getPlayerId()
+    {
+        return $this->get('PlayerId');
+    }
+    public function getMethodName()
+    {
+        return str($this->url())->explode('/')->last();
+    }
+
 }
