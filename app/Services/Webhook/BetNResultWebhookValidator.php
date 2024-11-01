@@ -158,9 +158,17 @@ class BetNResultWebhookValidator
     /**
      * Retrieve the secret key for signature validation
      */
+    // protected function getSecretKey()
+    // {
+    //     return config('game.api.secret_key');
+    // }
+
     protected function getSecretKey()
     {
-        return config('game.api.secret_key');
+        $secretKey = config('game.api.secret_key');
+        Log::info('Fetched secret key');
+
+        return $secretKey;
     }
 
     /**
