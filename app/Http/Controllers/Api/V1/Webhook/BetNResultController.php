@@ -104,8 +104,8 @@ class BetNResultController extends Controller
                 'net_win' => $request->getNetWin(),
                 'tran_date_time' => $tranDateTime,
                 'auth_token' => $request->getAuthToken(),
-                'old_balance' => round($BeforeBalance, 4),
-                'new_balance' => round($newBalance, 4),
+                //'old_balance' => round($BeforeBalance, 4),
+                //'new_balance' => round($newBalance, 4),
             ]);
 
             Log::info('Transaction created successfully', ['new_balance' => $newBalance]);

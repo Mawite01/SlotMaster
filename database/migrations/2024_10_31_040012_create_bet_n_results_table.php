@@ -29,8 +29,8 @@ return new class extends Migration
 
             $table->string('tran_date_time', 100);
             $table->string('auth_token', 500)->nullable();
-            $table->decimal('old_balance', 18, 4);      // Decimal with 4 precision
-            $table->decimal('new_balance', 18, 4);      // Decimal with 4 precision
+            $table->decimal('old_balance', 18, 4)->nullable();      // Decimal with 4 precision
+            $table->decimal('new_balance', 18, 4)->nullable();      // Decimal with 4 precision
             $table->timestamps();
         });
     }
