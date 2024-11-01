@@ -13,6 +13,7 @@ use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class CancelBetNResultController extends Controller
 {
@@ -39,21 +40,8 @@ class CancelBetNResultController extends Controller
             Log::info('Validator check passed');
             if ($validator->fails()) {
                 Log::warning('Validation failed');
-
                 return $this->buildErrorResponse(StatusCode::InvalidSignature);
             }
-            // if (isset($validator['Status']) && $validator['Status'] !== StatusCode::OK->value) {
-            //     Log::warning('Validation failed', ['validation_response' => $validator]);
-            //     return response()->json($validator);
-            // }
-
-
-            // if ($validator !== $request->getSignature()) {
-            //     Log::warning('Validation failed', ['validation_response' => $validator]);
-            //     return response()->json($validator);
-            // }else{
-            //     return $validator;
-            // }
 
             // Check for existing transaction with the provided TranId
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
@@ -105,7 +93,8 @@ class CancelBetNResultController extends Controller
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
-            'Description' => 'Transaction cancelled successfully',
+            'Description' => 'Success',
+            'ResponseDateTime' => Carbon::now()->format('Y-m-d H:i:s'),
             'Balance' => round($newBalance, 4),
         ]);
     }
