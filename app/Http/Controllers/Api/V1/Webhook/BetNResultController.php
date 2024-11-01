@@ -131,7 +131,8 @@ class BetNResultController extends Controller
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
-            'Description' => 'OK',
+            'Description' => 'Success',
+            'ResponseDateTime' => now(),
             'Balance' => round($newBalance, 4),
         ]);
     }
