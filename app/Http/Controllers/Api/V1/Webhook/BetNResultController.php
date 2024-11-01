@@ -46,7 +46,7 @@ class BetNResultController extends Controller
 
             // Perform validation using the validator class
             //$validator = BetNResultWebhookValidator::make($request)->validate();
-             $validator = $request->check();
+            $validator = $request->check();
             Log::info('Validator check passed');
             if ($validator->fails()) {
                 Log::warning('Validation failed');

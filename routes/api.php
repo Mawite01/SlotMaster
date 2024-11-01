@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\GetBalanceController;
 use App\Http\Controllers\Api\V1\PromotionController;
 use App\Http\Controllers\Api\V1\Webhook\BetNResultController;
+use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +39,4 @@ Route::get('popup-ads-banner', [BannerController::class, 'AdsBannerIndex']);
 
 Route::post('GetBalance', [GetBalanceController::class, 'getBalance']);
 Route::post('BetNResult', [BetNResultController::class, 'handleBetNResult']);
+Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleBetNResult']);
