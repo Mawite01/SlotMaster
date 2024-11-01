@@ -77,7 +77,12 @@ class BetNResultController extends Controller
                 $request->getBetAmount()
             );
 
-            $newBalance = $request->getMember()->refreshBalance()->balance;
+            //$newBalance = $request->getMember()->refreshBalance()->balance;
+
+            $request->getMember()->wallet->refreshBalance();
+
+            $newBalance = $request->getMember()->balanceFloat;
+
 
             // Create the transaction record
             BetNResult::create([
