@@ -45,7 +45,9 @@ class BetNResultController extends Controller
             Log::info('Retrieved player balance', ['old_balance' => $oldBalance]);
 
             // Perform validation using the validator class
-            $validator = BetNResultWebhookValidator::make($request)->validate();
+            //$validator = BetNResultWebhookValidator::make($request)->validate();
+             $validator = $request->check();
+            Log::info('Validator check passed');
             if ($validator->fails()) {
                 Log::warning('Validation failed');
 

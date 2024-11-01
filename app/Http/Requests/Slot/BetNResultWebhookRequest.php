@@ -42,12 +42,20 @@ class BetNResultWebhookRequest extends FormRequest
         ];
     }
 
+    // public function check()
+    // {
+    //     $validator = BetNResultWebhookValidator::make($this)->validate();
+
+    //     return $validator;
+    // }
+
     public function check()
     {
         $validator = BetNResultWebhookValidator::make($this)->validate();
 
         return $validator;
     }
+
 
     public function getOperatorId()
     {
