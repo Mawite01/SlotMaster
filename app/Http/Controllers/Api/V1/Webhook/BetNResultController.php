@@ -84,7 +84,8 @@ class BetNResultController extends Controller
             $newBalance = $request->getMember()->balanceFloat;
 
              // Convert TranDateTime to MySQL format
-        $tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
+        //$tranDateTime = Carbon::parse($request->getTranDateTime())->format('Y-m-d H:i:s');
+        $tranDateTime = Carbon::createFromFormat('Y-m-d\TH:i:s\Z', $request->getTranDateTime())->format('Y-m-d H:i:s');
 
             // Create the transaction record
             BetNResult::create([
