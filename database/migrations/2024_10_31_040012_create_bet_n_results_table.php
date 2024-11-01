@@ -25,9 +25,9 @@ return new class extends Migration
             $table->decimal('win_amount', 18, 4);   // Decimal with 4 precision
             $table->decimal('net_win', 18, 4);      // Decimal with 4 precision
             //$table->timestamp('tran_date_time')->useCurrent(); // ISO 8601 Standard timestamp
-            $table->timestamp('tran_date_time');
+            //$table->timestamp('tran_date_time');
 
-            //$table->string('tran_date_time', 50);
+            $table->string('tran_date_time', 100);
             $table->string('auth_token', 500)->nullable();
             $table->decimal('old_balance', 18, 4);      // Decimal with 4 precision
             $table->decimal('new_balance', 18, 4);      // Decimal with 4 precision
