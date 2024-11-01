@@ -63,6 +63,8 @@ class BetNResultController extends Controller
 
             // Check for duplicate TranId
             $existingTransaction = BetNResult::where('tran_id', $request->getTranId())->first();
+            Log::info('Retrieved player TransationID', ['TransationID' => $existingTransaction]);
+
             if ($existingTransaction) {
                 Log::warning('Duplicate TranId detected', ['tran_id' => $request->getTranId()]);
 
