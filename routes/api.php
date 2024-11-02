@@ -36,4 +36,4 @@ Route::post('GetBalance', [GetBalanceController::class, 'getBalance']);
 Route::post('BetNResult', [BetNResultController::class, 'handleBetNResult']);
 Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleCancelBetNResult']);
 Route::post('Bet', [BetController::class, 'handleBet']);
-Route::post('Bet', [ResultController::class, 'handleResult']);
+Route::post('Result', [ResultController::class, 'handleResult']);
