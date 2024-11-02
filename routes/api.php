@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\V1\Webhook\CancelBetController;
 use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
 use App\Http\Controllers\Api\V1\Webhook\ResultController;
 use App\Http\Controllers\Api\V1\Webhook\RewardController;
+use App\Http\Controllers\Api\V1\Slot\LaunchGameController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,3 +45,12 @@ Route::post('Result', [ResultController::class, 'handleResult']);
 Route::post('CancelBet', [CancelBetController::class, 'handleCancelBet']);
 Route::post('Adjustment', [AdjustmentController::class, 'handleAdjustment']);
 Route::post('Reward', [RewardController::class, 'handleReward']);
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    //Route::group(['prefix' => 'live22sm'], function () {
+        Route::post('GameLogin', [LaunchGameController::class, 'LaunchGame']);
+    //});
+
+});

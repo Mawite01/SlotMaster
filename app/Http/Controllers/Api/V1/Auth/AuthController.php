@@ -18,6 +18,8 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
 
 class AuthController extends Controller
 {
@@ -27,7 +29,9 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+
         $credentials = $request->only('phone', 'password');
+        Log::info('Received credentials:', $credentials);
 
         if (! Auth::attempt($credentials)) {
             return $this->error('', 'Credentials do not match!', 401);
