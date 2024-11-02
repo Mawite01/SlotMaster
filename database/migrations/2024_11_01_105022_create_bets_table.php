@@ -27,6 +27,8 @@ return new class extends Migration
             $table->decimal('bet_amount', 18, 4);
             $table->string('tran_date_time', 100)->default(now());
             $table->string('auth_token', 500)->nullable();
+            $table->string('status')->default('active'); // Default to 'active' for new transactions
+            $table->timestamp('cancelled_at')->nullable(); // Set when transaction is cancelled
             $table->timestamps();
         });
     }
