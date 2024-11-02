@@ -11,10 +11,14 @@ use App\Models\Webhook\Adjustment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\PlaceBetWebhookService;
+use App\Traits\UseWebhook;
 
 class AdjustmentController extends Controller
 {
-     public function handleAdjustment(AdjustmentWebhookRequest $request): JsonResponse
+    use UseWebhook;
+    
+    public function handleAdjustment(AdjustmentWebhookRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
@@ -60,7 +64,6 @@ class AdjustmentController extends Controller
                 $request->getMember()->wallet->refreshBalance();
 
                 $newBalance = $request->getMember()->balanceFloat;
-
 
                 Adjustment::create([
                     'user_id' => $player->id,
@@ -124,5 +127,4 @@ class AdjustmentController extends Controller
 
         return md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
     }
-
 }

@@ -26,7 +26,7 @@ class Bet extends Model
         'tran_date_time',
         'auth_token',
         'status',
-        'cancelled_at'
+        'cancelled_at',
     ];
 
     /**

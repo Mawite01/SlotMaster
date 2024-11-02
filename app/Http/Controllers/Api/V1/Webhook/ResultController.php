@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api\V1\Webhook;
 
 use App\Enums\StatusCode;
@@ -28,7 +29,7 @@ class ResultController extends Controller
 
             foreach ($transactions as $transaction) {
                 $player = User::where('user_name', $transaction['PlayerId'])->first();
-                if (!$player) {
+                if (! $player) {
                     Log::warning('Invalid player detected', [
                         'PlayerId' => $transaction['PlayerId'],
                     ]);
@@ -131,13 +132,14 @@ class ResultController extends Controller
     private function generateSignature(array $transaction): string
     {
         $method = 'Result';
+
         return md5(
-            $method .
-            $transaction['RoundId'] .
-            $transaction['ResultId'] .
-            $transaction['RequestDateTime'] .
-            $transaction['OperatorId'] .
-            config('game.api.secret_key') .
+            $method.
+            $transaction['RoundId'].
+            $transaction['ResultId'].
+            $transaction['RequestDateTime'].
+            $transaction['OperatorId'].
+            config('game.api.secret_key').
             $transaction['PlayerId']
         );
     }

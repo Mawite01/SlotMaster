@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Slot;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
 
 class AdjustmentWebhookRequest extends FormRequest
 {
@@ -55,7 +55,6 @@ class AdjustmentWebhookRequest extends FormRequest
     {
         return $this->get('PlayerId');
     }
-
 
     public function getTransactions()
     {
