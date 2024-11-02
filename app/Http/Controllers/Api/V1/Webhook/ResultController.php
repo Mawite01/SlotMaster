@@ -38,6 +38,8 @@ class ResultController extends Controller
 
                 // Validate signature
                 $signature = $this->generateSignature($transaction);
+                $signature = $this->generateSignature($transaction);
+                Log::info('Result Signature', ['GeneratedResultSignature' => $signature]);
                 if ($signature !== $transaction['Signature']) {
                     Log::warning('Signature validation failed for transaction', [
                         'transaction' => $transaction,
