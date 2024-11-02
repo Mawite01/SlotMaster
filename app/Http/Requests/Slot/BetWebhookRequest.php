@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Slot;
 
+use App\Models\User;
+use App\Services\Webhook\BetWebhookValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
-use App\Services\Webhook\BetWebhookValidator;
-use App\Models\User;
-
 
 class BetWebhookRequest extends FormRequest
 {
@@ -46,21 +45,25 @@ class BetWebhookRequest extends FormRequest
     {
         return $this->get('RequestDateTime');
     }
-     public function getRoundId() { return $this->get('RoundId'); }
-    public function getBetId() { return $this->get('BetId'); }
+
+    public function getRoundId()
+    {
+        return $this->get('RoundId');
+    }
+
+    public function getBetId()
+    {
+        return $this->get('BetId');
+    }
 
     public function getSignature()
     {
         return $this->get('Signature');
     }
+
     public function getCurrency()
     {
         return $this->get('Currency');
-    }
-
-    public function getTranId()
-    {
-        return $this->get('TranId');
     }
 
     public function getGameCode()
@@ -118,6 +121,7 @@ class BetWebhookRequest extends FormRequest
     {
         return $this->get('PlayerId');
     }
+
     public function getMethodName()
     {
         return str($this->url())->explode('/')->last();
@@ -137,11 +141,10 @@ class BetWebhookRequest extends FormRequest
                     'Signature' => $this->getSignature(),
                     'PlayerId' => $this->getPlayerId(),
                     'Currency' => $this->getCurrency(),
-                    'TranId' => $this->getTranId(),
+                    'RoundId' => $this->getRoundId(),
+                    'BetId' => $this->getBetId(),
                     'GameCode' => $this->getGameCode(),
                     'BetAmount' => $this->getBetAmount(),
-                    'WinAmount' => $this->getWinAmount(),
-                    'NetWin' => $this->getNetWin(),
                     'TranDateTime' => $this->getTranDateTime(),
                     'AuthToken' => $this->getAuthToken(),
                 ],

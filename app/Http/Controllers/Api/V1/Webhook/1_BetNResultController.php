@@ -86,11 +86,9 @@ class BetNResultController extends Controller
                 $request->getBetAmount()
             );
 
-
             $request->getMember()->wallet->refreshBalance();
 
             $newBalance = $request->getMember()->balanceFloat;
-
 
             $tranDateTime = Carbon::createFromFormat('Y-m-d\TH:i:s\Z', $request->getTranDateTime())->format('Y-m-d H:i:s');
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Bank\BankController;
 use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\GetBalanceController;
 use App\Http\Controllers\Api\V1\PromotionController;
+use App\Http\Controllers\Api\V1\Webhook\BetController;
 use App\Http\Controllers\Api\V1\Webhook\BetNResultController;
 use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
 use Illuminate\Http\Request;
@@ -21,16 +22,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/player-change-password', [AuthController::class, 'playerChangePassword']);
-
-// logout
-
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('promotion', [PromotionController::class, 'index']);
 Route::get('banner', [BannerController::class, 'index']);
@@ -40,3 +34,4 @@ Route::get('popup-ads-banner', [BannerController::class, 'AdsBannerIndex']);
 Route::post('GetBalance', [GetBalanceController::class, 'getBalance']);
 Route::post('BetNResult', [BetNResultController::class, 'handleBetNResult']);
 Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleCancelBetNResult']);
+Route::post('Bet', [BetController::class, 'handleBet']);

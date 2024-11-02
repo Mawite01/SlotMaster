@@ -130,7 +130,7 @@ class CancelBetNResultController extends Controller
         return response()->json([
             'Status' => StatusCode::OK->value,
             'Description' => 'Success',
-            'ResponseDateTime' => now(),
+            'ResponseDateTime' => now()->format('Y-m-d H:i:s'),
             'Balance' => round($newBalance, 4),
         ]);
     }

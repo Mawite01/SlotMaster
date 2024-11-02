@@ -46,8 +46,6 @@ class BetWebhookValidator
                 $transaction['BetId'],
                 $transaction['GameCode'],
                 $transaction['BetAmount'] ?? 0,
-                $transaction['WinAmount'] ?? 0,
-                $transaction['NetWin'] ?? 0,
                 $transaction['TranDateTime'],
                 $transaction['AuthToken'] ?? null
             );
@@ -74,7 +72,8 @@ class BetWebhookValidator
     protected function isValidSignature()
     {
         $method = $this->request->getMethodName();
-        $tranId = $this->request->getTranId();
+        $roundId = $this->request->getRoundId();
+        $betId = $this->request->getBetId();
         $requestTime = $this->request->getRequestDateTime();
         $operatorCode = $this->request->getOperatorId();
         $secretKey = $this->getSecretKey();
@@ -82,7 +81,8 @@ class BetWebhookValidator
 
         Log::info('Generating signature', [
             'method' => $method,
-            'tranId' => $tranId,
+            'roundId' => $roundId,
+            'betId' => $betId,
             'requestTime' => $requestTime,
             'operatorCode' => $operatorCode,
             'secretKey' => $secretKey,
@@ -90,7 +90,7 @@ class BetWebhookValidator
         ]);
 
         // Generate signature
-        $signature = md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
+        $signature = md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
         Log::info('Generated signature', ['signature' => $signature]);
 
         return $this->request->getSignature() === $signature;

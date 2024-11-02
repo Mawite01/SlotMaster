@@ -63,6 +63,7 @@ class BetNResultWebhookRequest extends FormRequest
     {
         return $this->get('Signature');
     }
+
     public function getCurrency()
     {
         return $this->get('Currency');
@@ -128,6 +129,7 @@ class BetNResultWebhookRequest extends FormRequest
     {
         return $this->get('PlayerId');
     }
+
     public function getMethodName()
     {
         return str($this->url())->explode('/')->last();
@@ -170,6 +172,4 @@ class BetNResultWebhookRequest extends FormRequest
 
         return $transactions;
     }
-
-
 }

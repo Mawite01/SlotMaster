@@ -5,27 +5,30 @@ namespace App\Http\Controllers\Api\V1\Webhook;
 use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Slot\BetNResultWebhookRequest;
+use App\Http\Requests\Slot\BetWebhookRequest;
+use App\Http\Requests\Slot\CancelBetNResultRequest;
+use App\Models\Admin\GameList;
 use App\Models\User;
-use App\Models\Webhook\BetNResult;
+use App\Models\Webhook\Bet;
 use App\Services\PlaceBetWebhookService;
 use App\Traits\UseWebhook;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class BetNResultController extends Controller
+class BetController extends Controller
 {
     use UseWebhook;
 
-    public function handleBetNResult(BetNResultWebhookRequest $request): JsonResponse
+    public function handleBet(BetWebhookRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
         DB::beginTransaction();
         try {
-            Log::info('Starting handleBetNResult method for multiple transactions');
+            Log::info('Starting handleBet method for multiple transactions');
 
             foreach ($transactions as $transaction) {
                 // Get the player
@@ -54,10 +57,10 @@ class BetNResultController extends Controller
                 }
 
                 // Check for duplicate transaction
-                $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
+                $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
                 if ($existingTransaction) {
-                    Log::warning('Duplicate TranId detected', [
-                        'TranId' => $transaction['TranId'],
+                    Log::warning('Duplicate BetId detected', [
+                        'BetId' => $transaction['BetId'],
                     ]);
                     $Balance = $request->getMember()->balanceFloat;
 
@@ -88,30 +91,31 @@ class BetNResultController extends Controller
 
                 $NewBalance = $request->getMember()->balanceFloat;
 
+                $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
+                $game_name = $game_code->game_name;
+                $provider_name = $game_code->game_provide_name;
                 // Create the transaction record
-                BetNResult::create([
+                Bet::create([
                     'user_id' => $player->id,
+                    'game_provide_name' => $provider_name,
+                    'game_name' => $game_name,
                     'operator_id' => $transaction['OperatorId'],
                     'request_date_time' => $transaction['RequestDateTime'],
                     'signature' => $transaction['Signature'],
                     'player_id' => $transaction['PlayerId'],
                     'currency' => $transaction['Currency'],
-                    'tran_id' => $transaction['TranId'],
+                    'round_id' => $transaction['RoundId'],
+                    'bet_id' => $transaction['BetId'],
                     'game_code' => $transaction['GameCode'],
                     'bet_amount' => $transaction['BetAmount'],
-                    'win_amount' => $transaction['WinAmount'],
-                    'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
                     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
-                    'auth_token' => $transaction['AuthToken'] ?? 'default_password',
-                    // 'old_balance' => round($player->wallet->balanceFloat, 4),
-                    //'new_balance' => round($player->wallet->refreshBalance()->balance, 4),
                 ]);
 
-                Log::info('Transaction processed successfully', ['TranId' => $transaction['TranId']]);
+                Log::info('Bet Transaction  processed successfully', ['BetID' => $transaction['BetId']]);
             }
 
             DB::commit();
-            Log::info('All transactions committed successfully');
+            Log::info('All Bet transactions  committed successfully');
 
             // Build a successful response with the final balance of the last player
             return $this->buildSuccessResponse($NewBalance);
@@ -148,13 +152,28 @@ class BetNResultController extends Controller
 
     private function generateSignature(array $transaction): string
     {
-        $method = 'BetNResult';
-        $tranId = $transaction['TranId'];
+        $method = 'Bet';
+        $roundId = $transaction['RoundId'];
+        $betId = $transaction['BetId'];
         $requestTime = $transaction['RequestDateTime'];
         $operatorCode = $transaction['OperatorId'];
-        $secretKey = config('game.api.secret_key'); // Fetch secret key from config
+        $secretKey = config('game.api.secret_key');
         $playerId = $transaction['PlayerId'];
 
-        return md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
+        return md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
     }
+
+    // private function generateSignature(array $transaction): string
+    // {
+    //     $method = 'Bet';
+    //     $roundId = $transaction['RoundId'];
+    //     $betId = $transaction['BetId'];
+    //     $requestTime = $transaction['RequestDateTime'];
+    //     $operatorCode = $transaction['OperatorId'];
+    //     $secretKey = config('game.api.secret_key'); // Fetch secret key from config
+    //     $playerId = $transaction['PlayerId'];
+
+    //     $betId = $transaction['BetId'];
+    //     return md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
+    // }
 }

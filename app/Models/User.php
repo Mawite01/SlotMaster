@@ -9,6 +9,7 @@ use App\Models\Admin\Permission;
 use App\Models\Admin\Role;
 use App\Models\Report;
 use App\Models\SeamlessTransaction;
+use App\Models\Webhook\Bet;
 use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWalletFloat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Webhook\Bet;
 
 class User extends Authenticatable implements Wallet
 {
@@ -198,7 +198,7 @@ class User extends Authenticatable implements Wallet
         return $this->morphMany(Transaction::class, 'payable');
     }
 
-     public function bets()
+    public function bets()
     {
         return $this->hasMany(Bet::class, 'user_id');
     }
