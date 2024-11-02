@@ -14,7 +14,7 @@ class BetWebhookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,17 @@ class BetWebhookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+             'OperatorId' => 'required|string|max:20',
+            'RequestDateTime' => 'required|string|max:50',
+            'Signature' => 'required|string|max:50',
+            'PlayerId' => 'required|string|max:50',
+            'Currency' => 'required|string|max:5',
+            'RoundId' => 'required|string|max:30',
+            'BetId' => 'required|string|max:30',
+            'GameCode' => 'required|string|max:50',
+            'BetAmount' => 'required|numeric',
+            'TranDateTime' => 'required|date',
+            'AuthToken' => 'nullable|string|max:500',
         ];
     }
 
