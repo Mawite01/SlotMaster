@@ -2,14 +2,15 @@
 
 namespace App\Models\Webhook;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Reward extends Model
 {
     use HasFactory;
-     protected $fillable = [
+
+    protected $fillable = [
         'user_id',
         'operator_id',
         'request_date_time',

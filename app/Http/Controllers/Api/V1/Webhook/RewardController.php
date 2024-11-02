@@ -6,8 +6,8 @@ use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\RewardWebhoodRequest;
-use App\Models\Webhook\Reward;
 use App\Models\User;
+use App\Models\Webhook\Reward;
 use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -126,7 +126,8 @@ class RewardController extends Controller
     private function generateSignature(array $transaction): string
     {
         $method = 'Reward';
-        return md5($method . $transaction['TranId'] . $transaction['RequestDateTime'] .
-                   $transaction['OperatorId'] . config('game.api.secret_key') . $transaction['PlayerId']);
+
+        return md5($method.$transaction['TranId'].$transaction['RequestDateTime'].
+                   $transaction['OperatorId'].config('game.api.secret_key').$transaction['PlayerId']);
     }
 }

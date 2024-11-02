@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\AdjustmentWebhookRequest;
 use App\Models\User;
 use App\Models\Webhook\Adjustment;
+use App\Services\PlaceBetWebhookService;
+use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\PlaceBetWebhookService;
-use App\Traits\UseWebhook;
 
 class AdjustmentController extends Controller
 {
