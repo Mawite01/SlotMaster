@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\PromotionController;
 use App\Http\Controllers\Api\V1\Webhook\BetController;
 use App\Http\Controllers\Api\V1\Webhook\BetNResultController;
 use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
+use App\Http\Controllers\Api\V1\Webhook\ResultController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,3 +36,4 @@ Route::post('GetBalance', [GetBalanceController::class, 'getBalance']);
 Route::post('BetNResult', [BetNResultController::class, 'handleBetNResult']);
 Route::post('CancelBetNResult', [CancelBetNResultController::class, 'handleCancelBetNResult']);
 Route::post('Bet', [BetController::class, 'handleBet']);
+Route::post('Bet', [ResultController::class, 'handleResult']);

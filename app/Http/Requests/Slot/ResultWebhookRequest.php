@@ -3,11 +3,10 @@
 namespace App\Http\Requests\Slot;
 
 use App\Models\User;
-use App\Services\Webhook\BetWebhookValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 
-class BetWebhookRequest extends FormRequest
+class ResultWebhookRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,19 +30,14 @@ class BetWebhookRequest extends FormRequest
             'PlayerId' => 'required|string|max:50',
             'Currency' => 'required|string|max:5',
             'RoundId' => 'required|string|max:30',
-            'BetId' => 'required|string|max:30',
+            'BetIds' => 'required|array',
+            'ResultId' => 'required|string|max:30|unique:results,result_id',
             'GameCode' => 'required|string|max:50',
-            'BetAmount' => 'required|numeric',
+            'TotalBetAmount' => 'required|numeric',
+            'WinAmount' => 'required|numeric',
+            'NetWin' => 'required|numeric',
             'TranDateTime' => 'required|date',
-            'AuthToken' => 'nullable|string|max:500',
         ];
-    }
-
-    public function check()
-    {
-        $validator = BetWebhookValidator::make($this)->validate();
-
-        return $validator;
     }
 
     public function getOperatorId()
@@ -146,17 +140,19 @@ class BetWebhookRequest extends FormRequest
             // If no 'transactions' key is found, assume single transaction structure based on individual fields
             $transactions = [
                 [
-                    'OperatorId' => $this->getOperatorId(),
-                    'RequestDateTime' => $this->getRequestDateTime(),
-                    'Signature' => $this->getSignature(),
-                    'PlayerId' => $this->getPlayerId(),
-                    'Currency' => $this->getCurrency(),
-                    'RoundId' => $this->getRoundId(),
-                    'BetId' => $this->getBetId(),
-                    'GameCode' => $this->getGameCode(),
-                    'BetAmount' => $this->getBetAmount(),
-                    'TranDateTime' => $this->getTranDateTime(),
-                    'AuthToken' => $this->getAuthToken(),
+                    'OperatorId' => $this->get('OperatorId'),
+                    'RequestDateTime' => $this->get('RequestDateTime'),
+                    'Signature' => $this->get('Signature'),
+                    'PlayerId' => $this->get('PlayerId'),
+                    'Currency' => $this->get('Currency'),
+                    'RoundId' => $this->get('RoundId'),
+                    'BetIds' => $this->get('BetIds'),
+                    'ResultId' => $this->get('ResultId'),
+                    'GameCode' => $this->get('GameCode'),
+                    'TotalBetAmount' => $this->get('TotalBetAmount'),
+                    'WinAmount' => $this->get('WinAmount'),
+                    'NetWin' => $this->get('NetWin'),
+                    'TranDateTime' => $this->get('TranDateTime'),
                 ],
             ];
         } elseif (isset($transactions['OperatorId'])) {
