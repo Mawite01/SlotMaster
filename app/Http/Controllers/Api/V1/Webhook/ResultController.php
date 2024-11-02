@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Webhook;
 
 use App\Enums\StatusCode;
@@ -12,7 +11,6 @@ use App\Models\Webhook\Result;
 use App\Services\PlaceBetWebhookService;
 use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -28,71 +26,84 @@ class ResultController extends Controller
         try {
             Log::info('Starting handleResult method for multiple transactions');
 
-            $player = User::where('user_name', $transactions['PlayerId'])->first();
-            if (! $player) {
-                Log::warning('Invalid player detected', [
-                    'PlayerId' => $transactions['PlayerId'],
+            foreach ($transactions as $transaction) {
+                $player = User::where('user_name', $transaction['PlayerId'])->first();
+                if (!$player) {
+                    Log::warning('Invalid player detected', [
+                        'PlayerId' => $transaction['PlayerId'],
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
+                }
+
+                // Validate signature
+                $signature = $this->generateSignature($transaction);
+                if ($signature !== $transaction['Signature']) {
+                    Log::warning('Signature validation failed for transaction', [
+                        'transaction' => $transaction,
+                        'generated_signature' => $signature,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
+                }
+
+                // Process payout if WinAmount > 0
+                if ($transaction['WinAmount'] > 0) {
+                    $this->processTransfer(
+                        User::adminUser(),
+                        $player,
+                        TransactionName::Payout,
+                        $transaction['WinAmount']
+                    );
+                }
+
+                // Refresh player's balance after processing the transaction
+                $player->wallet->refreshBalance();
+                $newBalance = $player->wallet->balanceFloat;
+
+                // Get game information
+                $game = GameList::where('game_code', $transaction['GameCode'])->first();
+                $game_name = $game ? $game->game_name : null;
+                $provider_name = $game ? $game->game_provide_name : null;
+
+                // Create result record
+                Result::create([
+                    'user_id' => $player->id,
+                    'player_name' => $player->name,
+                    'game_provide_name' => $provider_name,
+                    'game_name' => $game_name,
+                    'operator_id' => $transaction['OperatorId'],
+                    'request_date_time' => $transaction['RequestDateTime'],
+                    'signature' => $transaction['Signature'],
+                    'player_id' => $transaction['PlayerId'],
+                    'currency' => $transaction['Currency'],
+                    'round_id' => $transaction['RoundId'],
+                    'bet_ids' => $transaction['BetIds'],
+                    'result_id' => $transaction['ResultId'],
+                    'game_code' => $transaction['GameCode'],
+                    'total_bet_amount' => $transaction['TotalBetAmount'],
+                    'win_amount' => $transaction['WinAmount'],
+                    'net_win' => $transaction['NetWin'],
+                    'tran_date_time' => $transaction['TranDateTime'],
                 ]);
 
-                return PlaceBetWebhookService::buildResponse(StatusCode::InvalidPlayerPassword, 0, 0);
+                Log::info('Result transaction processed successfully', ['ResultId' => $transaction['ResultId']]);
             }
 
-            // Validate signature
-            $signature = $this->generateSignature($transactions);
-            if ($signature !== $transactions['Signature']) {
-                Log::warning('Signature validation failed');
-
-                return $this->buildErrorResponse(StatusCode::InvalidSignature);
-            }
-
-            // Process refund if WinAmount > 0
-            if ($transactions['WinAmount'] > 0) {
-                $this->processTransfer(
-                    User::adminUser(),
-                    $player,
-                    TransactionName::Payout,
-                    $transactions['WinAmount']
-                );
-            }
-
-            //$newBalance = $player->wallet->refreshBalance()->balanceFloat;
-            $request->getMember()->wallet->refreshBalance();
-
-            $newBalance = $request->getMember()->balanceFloat;
-            $game_code = GameList::where('game_code', $transactions['GameCode'])->first();
-            $game_name = $game_code->game_name;
-            $provider_name = $game_code->game_provide_name;
-
-            // Create result record
-            Result::create([
-                'user_id' => $player->id,
-                'player_name' => $player->name,
-                'game_provide_name' => $provider_name,
-                'game_name' => $game_name,
-                'operator_id' => $transactions['OperatorId'],
-                'request_date_time' => $transactions['RequestDateTime'],
-                'signature' => $transactions['Signature'],
-                'player_id' => $transactions['PlayerId'],
-                'currency' => $transactions['Currency'],
-                'round_id' => $transactions['RoundId'],
-                'bet_ids' => $transactions['BetIds'],
-                'result_id' => $transactions['ResultId'],
-                'game_code' => $transactions['GameCode'],
-                'total_bet_amount' => $transactions['TotalBetAmount'],
-                'win_amount' => $transactions['WinAmount'],
-                'net_win' => $transactions['NetWin'],
-                'tran_date_time' => $transactions['TranDateTime'],
-            ]);
-
-            Log::info('Result transaction processed successfully', ['ResultId' => $transactions['ResultId']]);
             DB::commit();
+            Log::info('All result transactions committed successfully');
 
+            // Return the latest balance of the last processed player
             return $this->buildSuccessResponse($newBalance);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to handle Result', ['error' => $e->getMessage()]);
+            Log::error('Failed to handle Result transactions', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ]);
 
-            return response()->json(['message' => 'Failed to handle Result'], 500);
+            return response()->json(['message' => 'Failed to handle Result transactions'], 500);
         }
     }
 
@@ -118,8 +129,14 @@ class ResultController extends Controller
     private function generateSignature(array $transaction): string
     {
         $method = 'Result';
-
-        return md5($method.$transaction['RoundId'].$transaction['ResultId'].$transaction['RequestDateTime'].
-                    $transaction['OperatorId'].config('game.api.secret_key').$transaction['PlayerId']);
+        return md5(
+            $method .
+            $transaction['RoundId'] .
+            $transaction['ResultId'] .
+            $transaction['RequestDateTime'] .
+            $transaction['OperatorId'] .
+            config('game.api.secret_key') .
+            $transaction['PlayerId']
+        );
     }
 }
