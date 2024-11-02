@@ -5,67 +5,74 @@ namespace App\Http\Controllers\Api\V1\Webhook;
 use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Slot\AdjustmentWebhookRequest;
+use App\Http\Requests\Slot\RewardWebhoodRequest;
+use App\Models\Webhook\Reward;
 use App\Models\User;
-use App\Models\Webhook\Adjustment;
+use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\PlaceBetWebhookService;
-use App\Traits\UseWebhook;
 
-class AdjustmentController extends Controller
+class RewardController extends Controller
 {
     use UseWebhook;
 
-    public function handleAdjustment(AdjustmentWebhookRequest $request): JsonResponse
+    public function handleReward(RewardWebhoodRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
         DB::beginTransaction();
         try {
-            Log::info('Starting handleAdjustment method for multiple transactions');
+            Log::info('Starting handleReward method for multiple transactions');
 
             foreach ($transactions as $transaction) {
-                // Retrieve the player
+                // Retrieve player by PlayerId
                 $player = User::where('user_name', $transaction['PlayerId'])->first();
                 if (! $player) {
                     Log::warning('Invalid player detected', [
                         'PlayerId' => $transaction['PlayerId'],
                     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
+                    return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword);
                 }
 
                 // Validate signature
                 $signature = $this->generateSignature($transaction);
-                Log::info('Adjustment Signature', ['GeneratedAdjustmentSignature' => $signature]);
-
                 if ($signature !== $transaction['Signature']) {
                     Log::warning('Signature validation failed', [
                         'transaction' => $transaction,
                         'generated_signature' => $signature,
                     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature, 0);
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
                 }
 
-                // Process adjustment (add or subtract balance)
+                // Check for duplicate transaction
+                $existingTransaction = Reward::where('tran_id', $transaction['TranId'])->first();
+                if ($existingTransaction) {
+                    Log::warning('Duplicate TranId detected', [
+                        'TranId' => $transaction['TranId'],
+                    ]);
+                    $balance = $player->wallet->balanceFloat;
+
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $balance);
+                }
+
+                // Process the reward
                 $this->processTransfer(
-                    $transaction['Amount'] > 0 ? User::adminUser() : $player,
-                    $transaction['Amount'] > 0 ? $player : User::adminUser(),
-                    TransactionName::BuyIn,
-                    abs($transaction['Amount'])
+                    User::adminUser(),
+                    $player,
+                    TransactionName::Bonus,
+                    $transaction['Amount']
                 );
 
-                // Update balance and log the adjustment
-                // $player->wallet->refreshBalance();
-                // $newBalance = $player->balanceFloat;
+                //$newBalance = $player->wallet->refreshBalance()->balanceFloat;
                 $request->getMember()->wallet->refreshBalance();
 
                 $newBalance = $request->getMember()->balanceFloat;
 
-                Adjustment::create([
+                // Create the reward record
+                Reward::create([
                     'user_id' => $player->id,
                     'operator_id' => $transaction['OperatorId'],
                     'request_date_time' => $transaction['RequestDateTime'],
@@ -73,27 +80,27 @@ class AdjustmentController extends Controller
                     'player_id' => $transaction['PlayerId'],
                     'currency' => $transaction['Currency'],
                     'tran_id' => $transaction['TranId'],
+                    'reward_id' => $transaction['RewardId'],
+                    'reward_name' => $transaction['RewardName'],
                     'amount' => $transaction['Amount'],
                     'tran_date_time' => $transaction['TranDateTime'],
-                    'remark' => $transaction['Remark'],
+                    'reward_detail' => $transaction['RewardDetail'] ?? null,
                 ]);
 
-                Log::info('Adjustment transaction processed successfully', ['TranId' => $transaction['TranId']]);
+                Log::info('Reward transaction processed successfully', ['TranId' => $transaction['TranId']]);
             }
 
             DB::commit();
-            Log::info('All Adjustment transactions committed successfully');
+            Log::info('All reward transactions committed successfully');
 
             return $this->buildSuccessResponse($newBalance);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to handle Adjustment', [
+            Log::error('Failed to handle Reward', [
                 'error' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
             ]);
 
-            return response()->json(['message' => 'Failed to handle Adjustment'], 500);
+            return response()->json(['message' => 'Failed to handle Reward'], 500);
         }
     }
 
@@ -118,13 +125,8 @@ class AdjustmentController extends Controller
 
     private function generateSignature(array $transaction): string
     {
-        $method = 'Adjustment';
-        $tranId = $transaction['TranId'];
-        $requestTime = $transaction['RequestDateTime'];
-        $operatorCode = $transaction['OperatorId'];
-        $secretKey = config('game.api.secret_key');
-        $playerId = $transaction['PlayerId'];
-
-        return md5($method.$tranId.$requestTime.$operatorCode.$secretKey.$playerId);
+        $method = 'Reward';
+        return md5($method . $transaction['TranId'] . $transaction['RequestDateTime'] .
+                   $transaction['OperatorId'] . config('game.api.secret_key') . $transaction['PlayerId']);
     }
 }
