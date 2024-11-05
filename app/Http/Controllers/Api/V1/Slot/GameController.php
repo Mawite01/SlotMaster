@@ -25,24 +25,13 @@ class GameController extends Controller
 
     public function gameTypeProducts($gameTypeID)
     {
-        $gameLobby = GameType::with(['products' => function ($query) {
-            $query->where('status', 1);
-            $query->where('game_list_status', 0);
-            $query->orderBy('order', 'asc');
-        }])->where('id', $gameTypeID)->where('status', 1)
-            ->first();
-
         $gameTypes = GameType::with(['products' => function ($query) {
             $query->where('status', 1);
-            $query->where('game_list_status', 1);
             $query->orderBy('order', 'asc');
         }])->where('id', $gameTypeID)->where('status', 1)
             ->first();
 
-        return $this->success([
-            'game_lobby' => $gameLobby,
-            'game_type' => $gameTypes,
-        ]);
+        return $this->success($gameTypes);
     }
 
     public function allGameProducts()
@@ -65,7 +54,6 @@ class GameController extends Controller
             ->get();
 
         return $this->success(GameDetailResource::collection($gameLists), 'Game Detail Successfully');
-
     }
 
     public function getGameDetail($provider_id, $game_type_id)

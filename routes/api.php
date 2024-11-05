@@ -52,11 +52,7 @@ Route::post('Reward', [RewardController::class, 'handleReward']);
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
-    //Route::group(['prefix' => 'live22sm'], function () {
         Route::post('GameLogin', [LaunchGameController::class, 'LaunchGame']);
-    //});
-
 });
 
 Route::get('gameTypeProducts/{id}', [GameController::class, 'gameTypeProducts']);
