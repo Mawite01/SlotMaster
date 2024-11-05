@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('currency', 5);
             $table->string('round_id', 30);
             $table->json('bet_ids'); // Array of Bet IDs
-            $table->string('result_id', 30)->unique();
+            $table->string('result_id', 30);
             $table->string('game_code', 50);
             $table->decimal('total_bet_amount', 18, 4);
             $table->decimal('win_amount', 18, 4);
