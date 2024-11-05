@@ -39,7 +39,6 @@ class ResultController extends Controller
 
                 // Validate signature
                 $signature = $this->generateSignature($transaction);
-                $signature = $this->generateSignature($transaction);
                 Log::info('Result Signature', ['GeneratedResultSignature' => $signature]);
                 if ($signature !== $transaction['Signature']) {
                     Log::warning('Signature validation failed for transaction', [
@@ -50,14 +49,13 @@ class ResultController extends Controller
                     return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
                 }
 
+                 // Check for duplicate ResultId
                 $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
                 if ($existingTransaction) {
-                    Log::warning('Duplicate ResultId detected', [
-                        'ResultId' => $transaction['ResultId'],
-                    ]);
-                    $Balance = $request->getMember()->balanceFloat;
+                    Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);
+                    $balance = $player->wallet->balanceFloat;
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $balance);
                 }
 
                 // Process payout if WinAmount > 0
