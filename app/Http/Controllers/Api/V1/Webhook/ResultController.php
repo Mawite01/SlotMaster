@@ -28,12 +28,10 @@ class ResultController extends Controller
             Log::info('Starting handleResult method for multiple transactions');
 
             foreach ($transactions as $transaction) {
+                // Find the player
                 $player = User::where('user_name', $transaction['PlayerId'])->first();
-                if (! $player) {
-                    Log::warning('Invalid player detected', [
-                        'PlayerId' => $transaction['PlayerId'],
-                    ]);
-
+                if (!$player) {
+                    Log::warning('Invalid player detected', ['PlayerId' => $transaction['PlayerId']]);
                     return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
                 }
 
@@ -45,11 +43,10 @@ class ResultController extends Controller
                         'transaction' => $transaction,
                         'generated_signature' => $signature,
                     ]);
-
                     return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
                 }
 
-                 // Check for duplicate ResultId
+                // Check for duplicate ResultId
                 $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
                 if ($existingTransaction) {
                     Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);
@@ -74,15 +71,15 @@ class ResultController extends Controller
 
                 // Get game information
                 $game = GameList::where('game_code', $transaction['GameCode'])->first();
-                $game_name = $game ? $game->game_name : null;
-                $provider_name = $game ? $game->game_provide_name : null;
+                $gameName = $game ? $game->game_name : null;
+                $providerName = $game ? $game->game_provide_name : null;
 
                 // Create result record
                 Result::create([
                     'user_id' => $player->id,
                     'player_name' => $player->name,
-                    'game_provide_name' => $provider_name,
-                    'game_name' => $game_name,
+                    'game_provide_name' => $providerName,
+                    'game_name' => $gameName,
                     'operator_id' => $transaction['OperatorId'],
                     'request_date_time' => $transaction['RequestDateTime'],
                     'signature' => $transaction['Signature'],
@@ -142,12 +139,12 @@ class ResultController extends Controller
         $method = 'Result';
 
         return md5(
-            $method.
-            $transaction['RoundId'].
-            $transaction['ResultId'].
-            $transaction['RequestDateTime'].
-            $transaction['OperatorId'].
-            config('game.api.secret_key').
+            $method .
+            $transaction['RoundId'] .
+            $transaction['ResultId'] .
+            $transaction['RequestDateTime'] .
+            $transaction['OperatorId'] .
+            config('game.api.secret_key') .
             $transaction['PlayerId']
         );
     }
