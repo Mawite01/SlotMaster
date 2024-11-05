@@ -50,6 +50,16 @@ class ResultController extends Controller
                     return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
                 }
 
+                $existingTransaction = Result::where('round_id', $transaction['RoundId'])->first();
+                if ($existingTransaction) {
+                    Log::warning('Duplicate RoundId detected', [
+                        'RoundId' => $transaction['RoundId'],
+                    ]);
+                    $Balance = $request->getMember()->balanceFloat;
+
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                }
+
                 // Process payout if WinAmount > 0
                 if ($transaction['WinAmount'] > 0) {
                     $this->processTransfer(

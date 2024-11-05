@@ -63,4 +63,4 @@ Route::get('gameTypeProducts/{id}', [GameController::class, 'gameTypeProducts'])
 Route::get('allGameProducts', [GameController::class, 'allGameProducts']);
 Route::get('gameType', [GameController::class, 'gameType']);
 Route::get('hotgamelist', [GameController::class, 'HotgameList']);
- Route::get('gamelist/{provider_id}/{game_type_id}', [GameController::class, 'gameList']);
+Route::get('gamelist/{provider_id}/{game_type_id}', [GameController::class, 'gameList']);
