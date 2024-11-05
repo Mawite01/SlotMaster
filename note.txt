@@ -6,7 +6,7 @@ php artisan make:migration add_balance_column_to_wallets_table --table=wallets
 php -r "file_put_contents('/var/www/SlotMaster/storage/logs/laravel.log', '');"
 // created dev branch for kzt
 
-tail -f /var/www/lucky_m_confirm_a/storage/logs/laravel.log
+tail -f /var/www/SlotMaster/storage/logs/laravel.log
 sudo su ubuntu
 crontab -e
 
