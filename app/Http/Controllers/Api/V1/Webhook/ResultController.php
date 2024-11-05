@@ -20,100 +20,101 @@ class ResultController extends Controller
     use UseWebhook;
 
     public function handleResult(ResultWebhookRequest $request): JsonResponse
-    {
-        $transactions = $request->getTransactions();
+{
+    $transactions = $request->getTransactions();
 
-        DB::beginTransaction();
-        try {
-            Log::info('Starting handleResult method for multiple transactions');
+    DB::beginTransaction();
+    try {
+        Log::info('Starting handleResult method for multiple transactions');
 
-            foreach ($transactions as $transaction) {
-                // Find the player
-                $player = User::where('user_name', $transaction['PlayerId'])->first();
-                if (!$player) {
-                    Log::warning('Invalid player detected', ['PlayerId' => $transaction['PlayerId']]);
-                    return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
-                }
-
-                // Validate signature
-                $signature = $this->generateSignature($transaction);
-                Log::info('Result Signature', ['GeneratedResultSignature' => $signature]);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed for transaction', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
-                }
-
-                // Check for duplicate ResultId
-                $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
-                if ($existingTransaction) {
-                    Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);
-                    $balance = $player->wallet->balanceFloat;
-
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $balance);
-                }
-
-                // Process payout if WinAmount > 0
-                if ($transaction['WinAmount'] > 0) {
-                    $this->processTransfer(
-                        User::adminUser(),
-                        $player,
-                        TransactionName::Payout,
-                        $transaction['WinAmount']
-                    );
-                }
-
-                // Refresh player's balance after processing the transaction
-                $player->wallet->refreshBalance();
-                $newBalance = $player->wallet->balanceFloat;
-
-                // Get game information
-                $game = GameList::where('game_code', $transaction['GameCode'])->first();
-                $gameName = $game ? $game->game_name : null;
-                $providerName = $game ? $game->game_provide_name : null;
-
-                // Create result record
-                Result::create([
-                    'user_id' => $player->id,
-                    'player_name' => $player->name,
-                    'game_provide_name' => $providerName,
-                    'game_name' => $gameName,
-                    'operator_id' => $transaction['OperatorId'],
-                    'request_date_time' => $transaction['RequestDateTime'],
-                    'signature' => $transaction['Signature'],
-                    'player_id' => $transaction['PlayerId'],
-                    'currency' => $transaction['Currency'],
-                    'round_id' => $transaction['RoundId'],
-                    'bet_ids' => $transaction['BetIds'],
-                    'result_id' => $transaction['ResultId'],
-                    'game_code' => $transaction['GameCode'],
-                    'total_bet_amount' => $transaction['TotalBetAmount'],
-                    'win_amount' => $transaction['WinAmount'],
-                    'net_win' => $transaction['NetWin'],
-                    'tran_date_time' => $transaction['TranDateTime'],
-                ]);
-
-                Log::info('Result transaction processed successfully', ['ResultId' => $transaction['ResultId']]);
+        foreach ($transactions as $transaction) {
+            // Find the player
+            $player = User::where('user_name', $transaction['PlayerId'])->first();
+            if (!$player) {
+                Log::warning('Invalid player detected', ['PlayerId' => $transaction['PlayerId']]);
+                return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
             }
 
-            DB::commit();
-            Log::info('All result transactions committed successfully');
+            // Validate signature
+            $signature = $this->generateSignature($transaction);
+            Log::info('Result Signature', ['GeneratedResultSignature' => $signature]);
+            if ($signature !== $transaction['Signature']) {
+                Log::warning('Signature validation failed for transaction', [
+                    'transaction' => $transaction,
+                    'generated_signature' => $signature,
+                ]);
+                return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
+            }
 
-            // Return the latest balance of the last processed player
-            return $this->buildSuccessResponse($newBalance);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Failed to handle Result transactions', [
-                'error' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
+            // Check for duplicate ResultId manually
+            $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
+            if ($existingTransaction) {
+                Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);
+                $balance = $player->wallet->balanceFloat;
+
+                return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $balance);
+            }
+
+            // Process payout if WinAmount > 0
+            if ($transaction['WinAmount'] > 0) {
+                $this->processTransfer(
+                    User::adminUser(),
+                    $player,
+                    TransactionName::Payout,
+                    $transaction['WinAmount']
+                );
+            }
+
+            // Refresh player's balance after processing the transaction
+            $player->wallet->refreshBalance();
+            $newBalance = $player->wallet->balanceFloat;
+
+            // Get game information
+            $game = GameList::where('game_code', $transaction['GameCode'])->first();
+            $gameName = $game ? $game->game_name : null;
+            $providerName = $game ? $game->game_provide_name : null;
+
+            // Create result record
+            Result::create([
+                'user_id' => $player->id,
+                'player_name' => $player->name,
+                'game_provide_name' => $providerName,
+                'game_name' => $gameName,
+                'operator_id' => $transaction['OperatorId'],
+                'request_date_time' => $transaction['RequestDateTime'],
+                'signature' => $transaction['Signature'],
+                'player_id' => $transaction['PlayerId'],
+                'currency' => $transaction['Currency'],
+                'round_id' => $transaction['RoundId'],
+                'bet_ids' => $transaction['BetIds'],
+                'result_id' => $transaction['ResultId'],
+                'game_code' => $transaction['GameCode'],
+                'total_bet_amount' => $transaction['TotalBetAmount'],
+                'win_amount' => $transaction['WinAmount'],
+                'net_win' => $transaction['NetWin'],
+                'tran_date_time' => $transaction['TranDateTime'],
             ]);
 
-            return response()->json(['message' => 'Failed to handle Result transactions'], 500);
+            Log::info('Result transaction processed successfully', ['ResultId' => $transaction['ResultId']]);
         }
+
+        DB::commit();
+        Log::info('All result transactions committed successfully');
+
+        // Return the latest balance of the last processed player
+        return $this->buildSuccessResponse($newBalance);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Failed to handle Result transactions', [
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+        ]);
+
+        return response()->json(['message' => 'Failed to handle Result transactions'], 500);
     }
+}
+
 
     private function buildSuccessResponse(float $newBalance): JsonResponse
     {
