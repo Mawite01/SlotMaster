@@ -31,7 +31,7 @@ class ResultWebhookRequest extends FormRequest
             'Currency' => 'required|string|max:5',
             'RoundId' => 'required|string|max:30',
             'BetIds' => 'required|array',
-            'ResultId' => 'required|string|max:30|unique:results,result_id',
+            'ResultId' => 'required|string|max:30',
             'GameCode' => 'required|string|max:50',
             'TotalBetAmount' => 'required|numeric',
             'WinAmount' => 'required|numeric',
