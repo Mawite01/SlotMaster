@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
 use App\Http\Controllers\Api\V1\Webhook\ResultController;
 use App\Http\Controllers\Api\V1\Webhook\RewardController;
 use App\Http\Controllers\Api\V1\Slot\LaunchGameController;
+use App\Http\Controllers\Api\V1\Slot\GameController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -57,3 +58,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //});
 
 });
+
+Route::get('gameTypeProducts/{id}', [GameController::class, 'gameTypeProducts']);
+Route::get('allGameProducts', [GameController::class, 'allGameProducts']);
+Route::get('gameType', [GameController::class, 'gameType']);
+Route::get('hotgamelist', [GameController::class, 'HotgameList']);
+ Route::get('gamelist/{provider_id}/{game_type_id}', [GameController::class, 'gameList']);
