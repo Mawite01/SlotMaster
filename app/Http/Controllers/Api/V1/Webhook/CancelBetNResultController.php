@@ -44,25 +44,25 @@ class CancelBetNResultController extends Controller
 
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
+                // if ($signature !== $transaction['Signature']) {
+                //     Log::warning('Signature validation failed', [
+                //         'transaction' => $transaction,
+                //         'generated_signature' => $signature,
+                //     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
-                }
+                //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                // }
 
                 // Check for duplicate transaction
                 $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
-                if ($existingTransaction) {
-                    Log::warning('Duplicate TranId detected', [
-                        'TranId' => $transaction['TranId'],
-                    ]);
-                    $Balance = $request->getMember()->balanceFloat;
+                // if ($existingTransaction) {
+                //     Log::warning('Duplicate TranId detected', [
+                //         'TranId' => $transaction['TranId'],
+                //     ]);
+                //     $Balance = $request->getMember()->balanceFloat;
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
-                }
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                // }
 
                 $PlayerBalance = $request->getMember()->balanceFloat;
 

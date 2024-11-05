@@ -48,25 +48,25 @@ class CancelBetController extends Controller
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
                 Log::info('CancelBet Signature', ['GeneratedCancelBetSignature' => $signature]);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
+                // if ($signature !== $transaction['Signature']) {
+                //     Log::warning('Signature validation failed', [
+                //         'transaction' => $transaction,
+                //         'generated_signature' => $signature,
+                //     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
-                }
+                //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                // }
 
                 // Check for duplicate transaction
-                $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
-                if ($existingTransaction) {
-                    Log::warning('Duplicate BetId detected', [
-                        'BetId' => $transaction['BetId'],
-                    ]);
-                    $Balance = $request->getMember()->balanceFloat;
+                // $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
+                // if ($existingTransaction) {
+                //     Log::warning('Duplicate BetId detected', [
+                //         'BetId' => $transaction['BetId'],
+                //     ]);
+                //     $Balance = $request->getMember()->balanceFloat;
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
-                }
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                // }
 
                 $PlayerBalance = $request->getMember()->balanceFloat;
 
