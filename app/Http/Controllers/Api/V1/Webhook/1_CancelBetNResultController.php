@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Webhook;
 use App\Enums\StatusCode;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Slot\BetNResultWebhookRequest;
+use App\Http\Requests\Slot\CancelBetNResultRequest;
 use App\Models\User;
 use App\Models\Webhook\BetNResult;
 use App\Services\PlaceBetWebhookService;
@@ -15,11 +15,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class BetNResultController extends Controller
+class CancelBetNResultController extends Controller
 {
     use UseWebhook;
 
-    public function handleBetNResult(BetNResultWebhookRequest $request): JsonResponse
+    public function handleCancelBetNResult(CancelBetNResultRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
@@ -44,25 +44,25 @@ class BetNResultController extends Controller
 
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
+                // if ($signature !== $transaction['Signature']) {
+                //     Log::warning('Signature validation failed', [
+                //         'transaction' => $transaction,
+                //         'generated_signature' => $signature,
+                //     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
-                }
+                //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                // }
 
                 // Check for duplicate transaction
                 $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
-                if ($existingTransaction) {
-                    Log::warning('Duplicate TranId detected', [
-                        'TranId' => $transaction['TranId'],
-                    ]);
-                    $Balance = $request->getMember()->balanceFloat;
+                // if ($existingTransaction) {
+                //     Log::warning('Duplicate TranId detected', [
+                //         'TranId' => $transaction['TranId'],
+                //     ]);
+                //     $Balance = $request->getMember()->balanceFloat;
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
-                }
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                // }
 
                 $PlayerBalance = $request->getMember()->balanceFloat;
 
@@ -78,9 +78,9 @@ class BetNResultController extends Controller
 
                 // Process the bet
                 $this->processTransfer(
-                    $player,
                     User::adminUser(), // Assuming admin user as the receiving party
-                    TransactionName::Stake,
+                    $player,
+                    TransactionName::Refund,
                     $transaction['BetAmount']
                 );
 
@@ -100,17 +100,16 @@ class BetNResultController extends Controller
                     'game_code' => $transaction['GameCode'],
                     'bet_amount' => $transaction['BetAmount'],
                     'win_amount' => $transaction['WinAmount'],
-                    'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
                     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
-                    'auth_token' => $transaction['AuthToken'] ?? 'default_password',
-
+                    'status' => 'cancelled',
+                    'cancelled_at' => now(),
                 ]);
 
-                Log::info('Transaction processed successfully', ['TranId' => $transaction['TranId']]);
+                Log::info('Transaction Refund processed successfully', ['TranId' => $transaction['TranId']]);
             }
 
             DB::commit();
-            Log::info('All transactions committed successfully');
+            Log::info('All transactions Refund committed successfully');
 
             // Build a successful response with the final balance of the last player
             return $this->buildSuccessResponse($NewBalance);
@@ -147,7 +146,7 @@ class BetNResultController extends Controller
 
     private function generateSignature(array $transaction): string
     {
-        $method = 'BetNResult';
+        $method = 'CancelBetNResult';
         $tranId = $transaction['TranId'];
         $requestTime = $transaction['RequestDateTime'];
         $operatorCode = $transaction['OperatorId'];

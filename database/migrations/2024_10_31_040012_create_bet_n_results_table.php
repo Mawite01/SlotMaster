@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->string('tran_date_time', 100);
             $table->string('auth_token', 500)->nullable();
-            $table->string('status')->default('active'); // Default to 'active' for new transactions
+            $table->string('status')->default('unprocessed'); // Default to 'unprocessed' for new transactions
             $table->timestamp('cancelled_at')->nullable(); // Set when transaction is cancelled
 
             $table->decimal('old_balance', 18, 4)->nullable();      // Decimal with 4 precision
