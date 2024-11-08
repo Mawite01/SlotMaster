@@ -28,7 +28,7 @@ class RewardWebhoodRequest extends FormRequest
             'Signature' => 'required|string|max:50',
             'PlayerId' => 'required|string|max:50',
             'Currency' => 'required|string|max:5',
-            'TranId' => 'required|string|max:30|unique:rewards,tran_id',
+            'TranId' => 'required|string|max:30',
             'RewardId' => 'required|string|max:50',
             'RewardName' => 'required|string|max:100',
             'Amount' => 'required|numeric',
