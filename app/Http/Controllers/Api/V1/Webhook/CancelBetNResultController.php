@@ -81,7 +81,7 @@ class CancelBetNResultController extends Controller
 
                     DB::commit();
                     //return $this->buildSuccessResponse();
-            return $this->buildSuccessResponse($NewBalance);
+                    return $this->buildSuccessResponse($NewBalance);
 
                 }
             }
