@@ -57,16 +57,6 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $agent = User::where('referral_code', $request->referral_code)->first();
-
-        if (! $agent) {
-            return $this->error('', 'Not Found Agent', 401);
-        }
-
-        if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
-            return $this->error('', 'Already Exist Account for this number', 401);
-        }
-
         $inputs = $request->validated();
 
         $user = User::create([
@@ -77,7 +67,7 @@ class AuthController extends Controller
             'payment_type_id' => $request->payment_type_id,
             'account_name' => $request->account_name,
             'account_number' => $request->account_number,
-            'agent_id' => $agent->id,
+            'agent_id' => 2,
             'type' => UserType::Player,
         ]);
         $user->roles()->sync(self::PLAYER_ROLE);
