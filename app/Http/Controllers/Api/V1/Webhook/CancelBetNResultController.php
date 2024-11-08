@@ -11,6 +11,8 @@ use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\PlaceBetWebhookService;
+
 
 class CancelBetNResultController extends Controller
 {
@@ -20,11 +22,26 @@ class CancelBetNResultController extends Controller
     {
         $transactions = $request->getTransactions();
 
+
+
         DB::beginTransaction();
         try {
             Log::info('Starting handleCancelBetNResult method for multiple transactions');
 
             foreach ($transactions as $transaction) {
+                $player = User::where('user_name', $transaction['PlayerId'])->first();
+                if (! $player) {
+                    Log::warning('Invalid player detected', [
+                        'PlayerId' => $transaction['PlayerId'],
+                    ]);
+
+                    return PlaceBetWebhookService::buildResponse(
+                        StatusCode::InvalidPlayerPassword,
+                        0,
+                        0
+                    );
+                }
+
                 // Check if the transaction has already been processed
                 $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
 
@@ -43,6 +60,8 @@ class CancelBetNResultController extends Controller
                         $existingTransaction->save();
                     } else {
                         // If no transaction record exists, create a new record with status 'processed'
+                        $NewBalance = $request->getMember()->balanceFloat;
+
                         BetNResult::create([
                             'user_id' => User::where('user_name', $transaction['PlayerId'])->first()->id,
                             'operator_id' => $transaction['OperatorId'],
@@ -61,7 +80,9 @@ class CancelBetNResultController extends Controller
                     }
 
                     DB::commit();
-                    return $this->buildSuccessResponse();
+                    //return $this->buildSuccessResponse();
+            return $this->buildSuccessResponse($NewBalance);
+
                 }
             }
 
@@ -77,12 +98,15 @@ class CancelBetNResultController extends Controller
         }
     }
 
-    private function buildSuccessResponse(): JsonResponse
+        private function buildSuccessResponse(float $newBalance): JsonResponse
+
     {
         return response()->json([
             'Status' => StatusCode::OK->value,
             'Description' => 'Success',
             'ResponseDateTime' => now()->format('Y-m-d H:i:s'),
+            'Balance' => round($newBalance, 4),
+
         ]);
     }
 
