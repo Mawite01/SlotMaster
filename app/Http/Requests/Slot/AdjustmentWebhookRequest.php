@@ -23,7 +23,7 @@ class AdjustmentWebhookRequest extends FormRequest
             'Signature' => 'required|string|max:50',
             'PlayerId' => 'required|string|max:50',
             'Currency' => 'required|string|max:5',
-            'TranId' => 'required|string|max:30|unique:adjustments,tran_id',
+            'TranId' => 'required|string|max:30',
             'Amount' => 'required|numeric',
             'TranDateTime' => 'required|date',
             'Remark' => 'nullable|string|max:100',
