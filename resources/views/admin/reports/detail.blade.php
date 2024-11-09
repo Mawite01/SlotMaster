@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-end mb-3">
-                        <a href="{{ rul('admin/slot/report') }}" class="btn btn-success " style="width: 100px;"><i
+                        <a href="{{ url('admin/slot/report') }}" class="btn btn-success " style="width: 100px;"><i
                                 class="fas fa-plus text-white  mr-2"></i>Back</a>
                     </div>
                     <div class="card " style="border-radius: 20px;">
