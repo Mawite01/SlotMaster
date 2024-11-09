@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\WithDraw\WithDrawRequestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Shan\ShanReportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::group([
     'prefix' => 'admin',
@@ -138,4 +139,8 @@ Route::group([
     Route::get('get-bet-detail/{wagerId}', [GetBetDetailController::class, 'getBetDetail'])->name('getBetDetail.show');
 
     Route::resource('/product_code', App\Http\Controllers\Admin\ProductCodeController::class);
+
+    Route::group(['prefix' => 'slot'], function () {
+        Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');
+    });
 });

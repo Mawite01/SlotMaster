@@ -116,16 +116,16 @@
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('admin_access')
+                        @can('admin_access')
                             <li class="nav-item">
-                                <a href="{{ route('admin.GscReport.index') }}" class="nav-link">
+                                <a href="{{ url('admin/slot/report') }}" class="nav-link">
                                     <i class="fas fa-users"></i>
                                     <p>
-                                        GSC W/L Report
+                                        W/L Report
                                     </p>
                                 </a>
                             </li>
-                        @endcan --}}
+                        @endcan
 
                         @can('agent_index')
                             <li class="nav-item">
