@@ -25,6 +25,6 @@ class ReportController extends Controller
         ->get();
 
     //return $report;
-    return view('admin.report.index', compact('report'));
+    return view('admin.reports.index', compact('report'));
 }
 }
