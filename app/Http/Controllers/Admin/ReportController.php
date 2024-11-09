@@ -41,16 +41,18 @@ class ReportController extends Controller
     return view('admin.reports.detail', compact('details', 'game_provide_name'));
 }
 
-
-    public function getTransactionDetails($operatorId, $tranId)
+    public function getTransactionDetails(Request $request)
 {
-    $url = 'https://api.sm-sspi-uat.com/api/opgateway/v1/op/GetTransactionDetails'; // Replace with the actual URL
+    $operatorId = $request->input('operatorId');
+    $tranId = $request->input('tranId');
+
+    $url = 'https://api.sm-sspi-uat.com/api/opgateway/v1/op/GetTransactionDetails';
 
     // Generate the RequestDateTime in UTC
     $requestDateTime = Carbon::now('UTC')->format('Y-m-d H:i:s');
 
     // Generate the signature using MD5 hashing
-    $secretKey = 's4fZpFsRfGp3VMeG'; // Replace with your actual secret key
+    $secretKey = 's4fZpFsRfGp3VMeG';
     $functionName = 'GetTransactionDetails';
     $signatureString = $functionName . $requestDateTime . $operatorId . $secretKey;
     $signature = md5($signatureString);
@@ -79,6 +81,44 @@ class ReportController extends Controller
         return response()->json(['error' => 'API request error'], 500);
     }
 }
+
+//     public function getTransactionDetails($operatorId, $tranId)
+// {
+//     $url = 'https://api.sm-sspi-uat.com/api/opgateway/v1/op/GetTransactionDetails'; // Replace with the actual URL
+
+//     // Generate the RequestDateTime in UTC
+//     $requestDateTime = Carbon::now('UTC')->format('Y-m-d H:i:s');
+
+//     // Generate the signature using MD5 hashing
+//     $secretKey = 's4fZpFsRfGp3VMeG'; // Replace with your actual secret key
+//     $functionName = 'GetTransactionDetails';
+//     $signatureString = $functionName . $requestDateTime . $operatorId . $secretKey;
+//     $signature = md5($signatureString);
+
+//     // Prepare request payload
+//     $payload = [
+//         'OperatorId' => $operatorId,
+//         'RequestDateTime' => $requestDateTime,
+//         'Signature' => $signature,
+//         'TranId' => $tranId
+//     ];
+
+//     try {
+//         // Make the POST request to the API endpoint
+//         $response = Http::post($url, $payload);
+
+//         // Check if the response is successful
+//         if ($response->successful()) {
+//             return $response->json(); // Return the response data as JSON
+//         } else {
+//             Log::error('Failed to get transaction details', ['response' => $response->body()]);
+//             return response()->json(['error' => 'Failed to get transaction details'], 500);
+//         }
+//     } catch (\Exception $e) {
+//         Log::error('API request error', ['message' => $e->getMessage()]);
+//         return response()->json(['error' => 'API request error'], 500);
+//     }
+// }
 
 }
 

@@ -52,7 +52,10 @@ Route::post('Reward', [RewardController::class, 'handleReward']);
 
 // sameless route
 
-Route::post('/transaction-details', [ReportController::class, 'getTransactionDetails']);
+//Route::post('/transaction-details', [ReportController::class, 'getTransactionDetails']);
+// routes/api.php or routes/web.php
+Route::post('/transaction-details/{operatorId}/{tranId}', [App\Http\Controllers\Admin\ReportController::class, 'getTransactionDetails']);
+
 
 
 
