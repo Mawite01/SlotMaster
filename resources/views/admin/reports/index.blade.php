@@ -30,12 +30,13 @@
                             <table id="mytable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>User Name</th>
-                                        <th>Game Provider Name</th>
-                                        <th>Total Stake</th>
-                                        <th>Total Bet Amount</th>
-                                        <th>Total Win Amount</th>
-                                        <th>Total Net Win</th>
+                                        <th>UserName</th>
+                                        <th>ProviderName</th>
+                                        <th>TotalStake</th>
+                                        <th>TotalBet</th>
+                                        <th>TotalWin</th>
+                                        <th>TotalNetWin</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,6 +48,9 @@
                                             <td>{{ number_format($row->total_bet_amount, 2) }}</td>
                                             <td>{{ number_format($row->total_win_amount, 2) }}</td>
                                             <td>{{ number_format($row->total_net_win, 2) }}</td>
+                                            <td><a
+                                                    href="{{ route('admin.reports.details', ['game_provide_name' => $row->game_provide_name]) }}">Detail</a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -142,5 +142,6 @@ Route::group([
 
     Route::group(['prefix' => 'slot'], function () {
         Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');
+        Route::get('reports/details/{game_provide_name}', [ReportController::class, 'getReportDetails'])->name('reports.details');
     });
 });
