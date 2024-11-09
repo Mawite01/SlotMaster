@@ -38,7 +38,7 @@ class ReportController extends Controller
         ->select('results.*', 'users.name as user_name')
         ->get();
 
-    return view('admin.reports.details', compact('details', 'game_provide_name'));
+    return view('admin.reports.detail', compact('details', 'game_provide_name'));
 }
 
 
