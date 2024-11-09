@@ -51,9 +51,17 @@
                                             <td>{{ $detail->player_name }}</td>
                                             <td>{{ $detail->game_name }}</td>
                                             <td>{{ $detail->operator_id }}</td>
-                                            <td><a href="https://delightmyanmar99.pro/api/transaction-details/{{ $detail->round_id }}"
+                                            {{-- <td><a href="https://delightmyanmar99.pro/api/transaction-details/{{ $detail->round_id }}"
                                                     target="_blank"
                                                     style="color: blueviolet; text-decoration: underline;">{{ $detail->round_id }}</a>
+                                            </td> --}}
+
+                                            <td>
+                                                <a href="javascript:void(0);"
+                                                    onclick="getTransactionDetails('{{ $detail->round_id }}')"
+                                                    style="color: blueviolet; text-decoration: underline;">
+                                                    {{ $detail->round_id }}
+                                                </a>
                                             </td>
                                             <td>{{ $detail->request_date_time }}</td>
                                             <td>{{ $detail->currency }}</td>
@@ -75,4 +83,31 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('script')
+    <script>
+        function getTransactionDetails(tranId) {
+            fetch(`/api/transaction-details/${tranId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Only if CSRF protection is enabled
+                    },
+                    body: JSON.stringify({
+                        tranId: tranId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data here, e.g., display in a modal or alert
+                    console.log(data);
+                    alert(JSON.stringify(data));
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to get transaction details');
+                });
+        }
+    </script>
 @endsection
