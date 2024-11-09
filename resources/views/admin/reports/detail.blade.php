@@ -87,7 +87,31 @@
 
 @section('script')
     <script>
+        // function getTransactionDetails(tranId) {
+        //     fetch(`/api/transaction-details/${tranId}`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'X-CSRF-TOKEN': '{{ csrf_token() }}' // Only if CSRF protection is enabled
+        //             },
+        //             body: JSON.stringify({
+        //                 tranId: tranId
+        //             })
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Handle the response data here, e.g., display in a modal or alert
+        //             console.log(data);
+        //             alert(JSON.stringify(data));
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //             alert('Failed to get transaction details');
+        //         });
+        // }
+
         function getTransactionDetails(tranId) {
+            // Make the POST request to fetch transaction details
             fetch(`/api/transaction-details/${tranId}`, {
                     method: 'POST',
                     headers: {
@@ -100,9 +124,16 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Handle the response data here, e.g., display in a modal or alert
-                    console.log(data);
-                    alert(JSON.stringify(data));
+                    // Assuming the response contains a URL or other relevant data to display
+                    if (data.Url) {
+                        // Redirect to the provided URL in the response data (open in new tab)
+                        window.open(data.Url, '_blank');
+                    } else {
+                        // If there's no URL, open a new page with data passed as URL parameters
+                        const newPageUrl =
+                            `/transaction-details-page?tranId=${tranId}&details=${encodeURIComponent(JSON.stringify(data))}`;
+                        window.open(newPageUrl, '_blank');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
