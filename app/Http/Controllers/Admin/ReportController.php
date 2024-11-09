@@ -41,10 +41,9 @@ class ReportController extends Controller
     return view('admin.reports.detail', compact('details', 'game_provide_name'));
 }
 
-    public function getTransactionDetails(Request $request)
+    public function getTransactionDetails($tranId)
 {
-    $operatorId = $request->input('operatorId');
-    $tranId = $request->input('tranId');
+    $operatorId = 'delightMMK';
 
     $url = 'https://api.sm-sspi-uat.com/api/opgateway/v1/op/GetTransactionDetails';
 
