@@ -51,9 +51,9 @@
                                             <td>{{ $detail->player_name }}</td>
                                             <td>{{ $detail->game_name }}</td>
                                             <td>{{ $detail->operator_id }}</td>
-                                            <td><a href="https://prodmd.9977997.com/Report/BetDetail?agentCode=E829&WagerID={{ $detail->result_id }}"
+                                            <td><a href="https://delightmyanmar99.pro/api/transaction-details/{{ $detail->round_id }}"
                                                     target="_blank"
-                                                    style="color: blueviolet; text-decoration: underline;">{{ $detail->result_id }}</a>
+                                                    style="color: blueviolet; text-decoration: underline;">{{ $detail->round_id }}</a>
                                             </td>
                                             <td>{{ $detail->request_date_time }}</td>
                                             <td>{{ $detail->currency }}</td>
