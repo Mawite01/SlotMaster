@@ -69,7 +69,7 @@ class GameController extends Controller
         $gameLists = GameList::where('hot_status', 1)
             ->get();
 
-        return $this->success(HotGameListResource::collection($gameLists), 'Hot Game Detail Successfully');
+        return $this->success(GameDetailResource::collection($gameLists), 'Hot Game Detail Successfully');
     }
 
 
