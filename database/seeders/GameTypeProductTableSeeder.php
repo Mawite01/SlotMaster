@@ -52,25 +52,37 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 7,  // CQ9
                 'game_type_id' => 2,  // Arcade
-                'image' => 'cq9.png',
+                'image' => 'cq_9.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 7,  // CQ9
                 'game_type_id' => 3,  // fish
-                'image' => 'cq9.png',
+                'image' => 'cq_9_fish.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 8,  // UUS
                 'game_type_id' => 2,  // Slots
-                'image' => 'uuslot.png',
+                'image' => 'uu_slot.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 9,  // MGH5
                 'game_type_id' => 2,  // Other
-                'image' => 'mega.jpeg',
+                'image' => 'mega_h5.jfif',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 10,  // MGH5
+                'game_type_id' => 2,  // Other
+                'image' => 'epic_win.jfif',
+                'rate' => '1.0000',
+            ],
+             [
+                'product_id' => 11,  // MGH5
+                'game_type_id' => 2,  // Other
+                'image' => 'yellow_bat.png',
                 'rate' => '1.0000',
             ],
             [
@@ -82,13 +94,37 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 13,  // FACHAI
                 'game_type_id' => 2,  // Arcade
-                'image' => 'facha.jpeg',
+                'image' => 'fachai.jfif',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 14,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'bng.jfif',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 15,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'ygr.jpg',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 16,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'hack_saw.jfif',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 17,  // FUNTA
                 'game_type_id' => 2,  // Arcade
-                'image' => 'funta_arcade.png',
+                'image' => 'funta.png',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 18,  // FUNTA
+                'game_type_id' => 2,  // Arcade
+                'image' => 'simple_play.png',
                 'rate' => '1.0000',
             ],
         ];
