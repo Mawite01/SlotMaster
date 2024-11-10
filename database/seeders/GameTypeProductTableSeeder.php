@@ -76,7 +76,7 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 10,  // MGH5
                 'game_type_id' => 2,  // Other
-                'image' => 'epic_win.jpg',
+                'image' => 'epic_win.jfif',
                 'rate' => '1.0000',
             ],
              [
