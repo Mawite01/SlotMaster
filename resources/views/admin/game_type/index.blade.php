@@ -34,10 +34,11 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($gameTypes as $gameType)
-                                        @foreach ($gameType->products as $product)
+                                        @foreach ($gameType->products as $product)  
+
                                             <tr>
                                                 <td class="text-center">{{ $gameType->name }}</td>
-                                                <td class="text-center">{{ $product->name }}</td>
+                                                <td class="text-center">{{ $product->provider_name }}</td>
                                                 <td class="text-center"><img src="{{ $product->getImgUrlAttribute() }}" alt=""
                                                         width="100px">
                                                 </td>

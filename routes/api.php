@@ -15,7 +15,10 @@ use App\Http\Controllers\Api\V1\Webhook\RewardController;
 use App\Http\Controllers\Api\V1\Slot\LaunchGameController;
 use App\Http\Controllers\Api\V1\Slot\GameController;
 use App\Http\Controllers\Admin\ReportController;
-
+use App\Http\Controllers\Api\V1\DepositRequestController;
+use App\Http\Controllers\Api\V1\TransactionController;
+use App\Http\Controllers\Api\V1\WagerController;
+use App\Http\Controllers\Api\V1\WithDrawRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,14 +60,28 @@ Route::post('Reward', [RewardController::class, 'handleReward']);
 Route::post('/transaction-details/{tranId}', [App\Http\Controllers\Admin\ReportController::class, 'getTransactionDetails']);
 
 
-
-
 Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('GameLogin', [LaunchGameController::class, 'LaunchGame']);
-});
+        // Route::get('wager-logs', [WagerController::class, 'index']); //GSC
+        // Route::get('transactions', [TransactionController::class, 'index'])->middleware('transaction');
+    
+        Route::get('user', [AuthController::class, 'getUser']);
+        Route::get('contact', [AuthController::class, 'getContact']);
+        Route::get('agent', [AuthController::class, 'getAgent']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('change-password/{player}', [AuthController::class, 'changePassword']);
+        Route::post('profile', [AuthController::class, 'profile']);
+        Route::get('agentPaymentType', [BankController::class, 'all']);
+        Route::post('deposit', [DepositRequestController::class, 'deposit']);
+        Route::get('depositlog', [DepositRequestController::class, 'log']);
+        Route::get('paymentType', [BankController::class, 'paymentType']);
+        Route::post('withdraw', [WithDrawRequestController::class, 'withdraw']);
+        Route::get('withdrawlog', [WithDrawRequestController::class, 'log']);
+    });
 
 Route::get('gameTypeProducts/{id}', [GameController::class, 'gameTypeProducts']);
 Route::get('allGameProducts', [GameController::class, 'allGameProducts']);
 Route::get('gameType', [GameController::class, 'gameType']);
 Route::get('hotgamelist', [GameController::class, 'HotgameList']);
 Route::get('gamelist/{provider_id}/{game_type_id}', [GameController::class, 'gameList']);
+Route::get('gameFilter', [GameController::class, 'gameFilter']);

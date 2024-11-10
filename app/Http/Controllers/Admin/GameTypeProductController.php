@@ -12,8 +12,9 @@ class GameTypeProductController extends Controller
 {
     public function index()
     {
-        $gameTypes = GameType::with('products')->get();
-
+        $gameTypes = GameType::with('products')->where('status', 1)
+            ->get();
+   
         return view('admin.game_type.index', compact('gameTypes'));
     }
 

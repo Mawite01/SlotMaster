@@ -32,7 +32,11 @@ return new class extends Migration
             $table->string('game_event')->nullable();    // GameEvent field (nullable)
             $table->string('game_provide_code', 50);     // GameProvideCode field
             $table->string('game_provide_name', 100);    // GameProvideName field
+
             $table->timestamps();
+            $table->foreign('game_type_id')->references('id')->on('game_types')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+
 
         });
     }

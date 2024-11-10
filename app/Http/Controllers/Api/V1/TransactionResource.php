@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PlayerResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,10 @@ class PlayerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'user_name' => $this->user_name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'balance' => $this->balanceFloat,
-            'status' => $this->status,
+            'closing_balance' => $this->amountFloat + $this->meta['opening_balance'],
+            'type' => $this->type,
+            'amount' => $this->amountFloat,
+            'datetime' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }
