@@ -74,6 +74,18 @@ class GameTypeProductTableSeeder extends Seeder
                 'rate' => '1.0000',
             ],
             [
+                'product_id' => 10,  // MGH5
+                'game_type_id' => 2,  // Other
+                'image' => 'epic_win.jpg',
+                'rate' => '1.0000',
+            ],
+             [
+                'product_id' => 11,  // MGH5
+                'game_type_id' => 2,  // Other
+                'image' => 'yellow_bat.png',
+                'rate' => '1.0000',
+            ],
+            [
                 'product_id' => 12,  // EVOPLAY
                 'game_type_id' => 2,  // Other
                 'image' => 'evoplay.png',
@@ -86,9 +98,33 @@ class GameTypeProductTableSeeder extends Seeder
                 'rate' => '1.0000',
             ],
             [
+                'product_id' => 14,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'bng.jfif',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 15,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'ygr.jpg',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 16,  // FACHAI
+                'game_type_id' => 2,  // Arcade
+                'image' => 'hack_saw.jfif',
+                'rate' => '1.0000',
+            ],
+            [
                 'product_id' => 17,  // FUNTA
                 'game_type_id' => 2,  // Arcade
                 'image' => 'funta.png',
+                'rate' => '1.0000',
+            ],
+            [
+                'product_id' => 18,  // FUNTA
+                'game_type_id' => 2,  // Arcade
+                'image' => 'simple_play.png',
                 'rate' => '1.0000',
             ],
         ];
