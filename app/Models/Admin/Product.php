@@ -28,7 +28,7 @@ class Product extends Model
     public function getImgUrlAttribute()
     {
         if (isset($this->pivot) && isset($this->pivot->image)) {
-            return asset('assets/img/game_logo/'.$this->pivot->image);
+            return asset('assets/img/provider_logo/'.$this->pivot->image);
         }
 
     }
