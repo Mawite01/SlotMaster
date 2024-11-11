@@ -46,7 +46,7 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 6,  // JDB
                 'game_type_id' => 2,  // Other
-                'image' => 'j_d_b.png',
+                'image' => 'jdb.png',
                 'rate' => '1.0000',
             ],
             [

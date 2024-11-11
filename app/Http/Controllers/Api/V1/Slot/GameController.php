@@ -69,6 +69,15 @@ class GameController extends Controller
         $gameLists = GameList::where('hot_status', 1)
             ->get();
 
-        return $this->success(HotGameListResource::collection($gameLists), 'Hot Game Detail Successfully');
+        return $this->success(GameDetailResource::collection($gameLists), 'Hot Game Detail Successfully');
+    }
+
+
+    public function gameFilter(Request $request)
+    {
+        $gameLists = GameList::where('game_name', 'like', '%' . $request->name . '%')->get();
+
+        return $this->success(GameDetailResource::collection($gameLists), 'Game Detail Successfully');
+
     }
 }

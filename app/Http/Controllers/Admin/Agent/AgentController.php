@@ -62,8 +62,9 @@ class AgentController extends Controller
 
         $agent_name = $this->generateRandomString();
         $paymentTypes = PaymentType::all();
+        $referral_code = $this->generateReferralCode();
 
-        return view('admin.agent.create', compact('agent_name', 'paymentTypes'));
+        return view('admin.agent.create', compact('agent_name', 'paymentTypes', 'referral_code'));
     }
 
     /**
@@ -441,5 +442,18 @@ class AgentController extends Controller
             ->get();
 
         return view('admin.agent.auth_win_lose_details', compact('details'));
+    }
+
+    private function generateReferralCode($length = 8)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
     }
 }

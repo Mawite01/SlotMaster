@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('agent_payment_type_id');
             $table->unsignedBigInteger('amount');
             $table->unsignedBigInteger('refrence_no');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
 

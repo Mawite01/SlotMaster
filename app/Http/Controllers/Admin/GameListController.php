@@ -14,14 +14,17 @@ class GameListController extends Controller
     {
         if ($request->ajax()) {
             $data = GameList::with(['gameType', 'product']);
-
+      
             return Datatables::of($data)
-                ->addIndexColumn() // This will automatically add a column called DT_RowIndex
+                ->addIndexColumn()
                 ->addColumn('game_type', function ($row) {
                     return $row->gameType->name ?? 'N/A';
                 })
+                ->addColumn('game_name', function ($row) {
+                    return $row->game_name;
+                })
                 ->addColumn('product', function ($row) {
-                    return $row->product->name ?? 'N/A';
+                    return $row->product->provider_name ?? 'N/A';
                 })
                 ->addColumn('status', function ($row) {
                     return $row->status == 1 ? 'Running Game' : 'Game is Closed';

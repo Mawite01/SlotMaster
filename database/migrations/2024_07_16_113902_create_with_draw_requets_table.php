@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('account_name');
             $table->string('account_number');
             $table->tinyInteger('status')->default(0);
-            $table->unsignedBigInteger('bank_id');
+            $table->unsignedBigInteger('payment_type_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('agent_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade');
+            $table->foreign('payment_type_id')->references('id')->on('payment_types')->onDelete('cascade');
         });
     }
 

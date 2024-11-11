@@ -93,8 +93,6 @@
 
             <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
-                <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
@@ -148,22 +146,22 @@
                             </li>
                         @endcan
 
-                        @can('promotion')
-                            <li class="nav-item">
-                                <a href="{{ route('admin.promotion.index') }}" class="nav-link">
-                                    <i class="fas fa-bullhorn"></i>
-                                    <p>
-                                        Promotion
-                                    </p>
-                                </a>
-                            </li>
-                        @endcan
                         @can('contact')
                             <li class="nav-item">
                                 <a href="{{ route('admin.contact.index') }}" class="nav-link">
                                     <i class="fas fa-address-book"></i>
                                     <p>
                                         Contact
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('bank')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.bank.index') }}" class="nav-link">
+                                    <i class="fas fa-address-book"></i>
+                                    <p>
+                                        Bank
                                     </p>
                                 </a>
                             </li>
@@ -176,7 +174,6 @@
                                 </p>
                             </a>
                         </li>
-                        {{-- @can('admin_access')
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-tools"></i>
@@ -200,7 +197,6 @@
                                     </li>
                                 </ul>
                             </li>
-                        @endcan --}}
                         @can('admin_access')
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
@@ -217,7 +213,12 @@
                                             <p>BannerText</p>
                                         </a>
                                     </li>
-
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.banners.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Banner</p>
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="{{ route('admin.adsbanners.index') }}" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
@@ -234,95 +235,6 @@
                             </li>
                         @endcan
 
-                        {{-- @can('admin_access')
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tools"></i>
-                                    <p>
-                                        Shan
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{ url('admin/shan-report') }}" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Win/Lose</p>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        @endcan --}}
-
-                        {{-- @can('admin_access')
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tools"></i>
-                                    <p>
-                                        Live22
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{ url('admin/live22/win-lose-report') }}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Live22-Win/Lose</p>
-                    </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.paymentTypes.index') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Payment Type</p>
-                        </a>
-                    </li>
-                    </ul>
-                    </li>
-                    @endcan --}}
-
-                        {{-- for agent --}}
-                        {{-- @can('deposit')
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tools"></i>
-                                    <p>
-                                        GSC
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{ url('admin/agent-slot-win-lose') }}" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Win/Lose Report</p>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        @endcan --}}
-
-                        {{-- @can('deposit')
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tools"></i>
-                                    <p>
-                                        Shan W/L Report
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{ url('admin/agent-shan-report') }}" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Win/Lose Report</p>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        @endcan --}}
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>

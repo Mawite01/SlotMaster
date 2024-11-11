@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BannerAds\BannerAdsController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BannerTextController;
 use App\Http\Controllers\Admin\Bonu\BonusController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\Deposit\DepositRequestController;
 use App\Http\Controllers\Admin\GameListController;
 use App\Http\Controllers\Admin\GameTypeProductController;
@@ -15,14 +16,12 @@ use App\Http\Controllers\Admin\Master\MasterController;
 use App\Http\Controllers\Admin\PaymentTypeController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\Player\PlayerController;
-use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TransferLog\TransferLogController;
 use App\Http\Controllers\Admin\WithDraw\WithDrawRequestController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Shan\ShanReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ReportController;
 
@@ -39,14 +38,8 @@ Route::group([
     Route::post('/updatePassword/{user}', [HomeController::class, 'updatePassword'])->name('updatePassword');
     Route::get('/player-list', [HomeController::class, 'playerList'])->name('playerList');
 
-    // Permissions
-    Route::resource('permissions', PermissionController::class);
-    // Roles
-    Route::delete('roles/destroy', [RolesController::class, 'massDestroy'])->name('roles.massDestroy');
-    Route::resource('roles', RolesController::class);
     // Players
     Route::delete('user/destroy', [PlayerController::class, 'massDestroy'])->name('user.massDestroy');
-
     Route::put('player/{id}/ban', [PlayerController::class, 'banUser'])->name('player.ban');
     Route::resource('player', PlayerController::class);
     Route::get('player-cash-in/{player}', [PlayerController::class, 'getCashIn'])->name('player.getCashIn');
@@ -56,13 +49,13 @@ Route::group([
         ->name('player.makeCashOut');
     Route::get('player-changepassword/{id}', [PlayerController::class, 'getChangePassword'])->name('player.getChangePassword');
     Route::post('player-changepassword/{id}', [PlayerController::class, 'makeChangePassword'])->name('player.makeChangePassword');
-
     Route::get('/players-list', [PlayerController::class, 'player_with_agent'])->name('playerListForAdmin');
 
     Route::resource('banners', BannerController::class);
     Route::resource('adsbanners', BannerAdsController::class);
     Route::resource('text', BannerTextController::class);
     Route::resource('/promotions', PromotionController::class);
+    Route::resource('contact', ContactController::class);
     Route::resource('paymentTypes', PaymentTypeController::class);
     Route::resource('bank', BankController::class);
     Route::get('gametypes', [GameTypeProductController::class, 'index'])->name('gametypes.index');
@@ -101,15 +94,6 @@ Route::group([
 
     Route::get('/agent-to-player-detail/{agent_id}/{player_id}', [AgentController::class, 'AgentToPlayerDetail'])->name('agent.to.player.detail');
 
-    Route::resource('master', MasterController::class);
-    Route::get('master-cash-in/{id}', [MasterController::class, 'getCashIn'])->name('master.getCashIn');
-    Route::post('master-cash-in/{id}', [MasterController::class, 'makeCashIn'])->name('master.makeCashIn');
-    Route::get('master/cash-out/{id}', [MasterController::class, 'getCashOut'])->name('master.getCashOut');
-    Route::post('master/cash-out/update/{id}', [MasterController::class, 'makeCashOut'])
-        ->name('master.makeCashOut');
-    Route::put('master/{id}/ban', [MasterController::class, 'banMaster'])->name('master.ban');
-    Route::get('master-changepassword/{id}', [MasterController::class, 'getChangePassword'])->name('master.getChangePassword');
-    Route::post('master-changepassword/{id}', [MasterController::class, 'makeChangePassword'])->name('master.makeChangePassword');
 
     Route::get('withdraw', [WithDrawRequestController::class, 'index'])->name('agent.withdraw');
     Route::post('withdraw/{withdraw}', [WithDrawRequestController::class, 'statusChangeIndex'])->name('agent.withdrawStatusUpdate');

@@ -22,8 +22,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-end mb-3">
-                    {{-- <a href="{{ route('admin.player.create') }}" class="btn btn-success " style="width: 100px;"><i
-                        class="fas fa-plus text-white  mr-2"></i>Back</a> --}}
+                 
                 </div>
                 <div class="card " style="border-radius: 20px;">
                     <div class="card-header">
@@ -92,15 +91,15 @@
                 },
                 {
                     data: 'game_type',
-                    name: 'gameType.name'
+                    name: 'game_type'
                 },
                 {
                     data: 'product',
-                    name: 'product.name'
+                    name: 'product'
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'game_name',
+                    name: 'game_name'
                 },
                 {
                     data: 'image_url',

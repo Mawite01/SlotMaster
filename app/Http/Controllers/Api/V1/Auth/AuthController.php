@@ -13,6 +13,7 @@ use App\Http\Resources\PlayerResource;
 use App\Http\Resources\RegisterResource;
 use App\Http\Resources\UserResource;
 use App\Models\Admin\UserLog;
+use App\Models\Contact;
 use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -31,7 +32,6 @@ class AuthController extends Controller
     {
 
         $credentials = $request->only('phone', 'password');
-        Log::info('Received credentials:', $credentials);
 
         if (! Auth::attempt($credentials)) {
             return $this->error('', 'Credentials do not match!', 401);
@@ -57,6 +57,16 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
+        $agent = User::where('referral_code', $request->referral_code)->first();
+
+        if (! $agent) {
+            return $this->error('', 'Not Found Agent', 401);
+        }
+
+        // if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
+        //     return $this->error('', 'Already Exist Account for this number', 401);
+        // }
+
         $inputs = $request->validated();
 
         $user = User::create([
@@ -67,7 +77,7 @@ class AuthController extends Controller
             'payment_type_id' => $request->payment_type_id,
             'account_name' => $request->account_name,
             'account_number' => $request->account_number,
-            'agent_id' => 2,
+            'agent_id' => $agent->id,
             'type' => UserType::Player,
         ]);
         $user->roles()->sync(self::PLAYER_ROLE);
@@ -127,7 +137,6 @@ class AuthController extends Controller
 
     public function profile(ProfileRequest $request)
     {
-
         $player = Auth::user();
         $player->update([
             'name' => $request->name,
@@ -144,6 +153,15 @@ class AuthController extends Controller
         return $this->success(new AgentResource($player->parent), 'Agent Information List');
     }
 
+    public function getContact()  
+    {
+        $player = Auth::user();
+
+        $contact = Contact::where('agent_id', $player->agent_id)->get();
+
+        return $this->success($contact, 'Agent Contact list');
+    }
+
     private function generateRandomString()
     {
         $randomNumber = mt_rand(10000000, 99999999);
@@ -151,7 +169,7 @@ class AuthController extends Controller
         return 'SB'.$randomNumber;
     }
 
-    private function isExistingUserForAgent($phone, $agent_id): bool
+    private function isExistingUserForAgent($phone, $agent_id)
     {
         return User::where('phone', $phone)->where('agent_id', $agent_id)->first();
     }

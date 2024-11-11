@@ -24,7 +24,7 @@ class Product extends Model
     {
         return $this->hasMany(GameList::class);
     }
-
+    
     public function getImgUrlAttribute()
     {
         if (isset($this->pivot) && isset($this->pivot->image)) {

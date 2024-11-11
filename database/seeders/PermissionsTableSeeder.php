@@ -100,7 +100,7 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'site_logo',
+                'title' => 'contact',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
