@@ -63,9 +63,9 @@ class AuthController extends Controller
             return $this->error('', 'Not Found Agent', 401);
         }
 
-        if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
-            return $this->error('', 'Already Exist Account for this number', 401);
-        }
+        // if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
+        //     return $this->error('', 'Already Exist Account for this number', 401);
+        // }
 
         $inputs = $request->validated();
 
@@ -169,7 +169,7 @@ class AuthController extends Controller
         return 'SB'.$randomNumber;
     }
 
-    private function isExistingUserForAgent($phone, $agent_id): bool
+    private function isExistingUserForAgent($phone, $agent_id)
     {
         return User::where('phone', $phone)->where('agent_id', $agent_id)->first();
     }

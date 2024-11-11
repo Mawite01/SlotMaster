@@ -19,7 +19,8 @@ class PaymentTypeResource extends JsonResource
             "account_name" => $this->account_name,
             "account_number" => $this->account_number,
             "payment_type_id" => $this->payment_type_id,
-            "payment_type" => $this->paymentType->name
+            "payment_type" => $this->paymentType->name,
+            "image" => $this->paymentType->image_url
         ];
 
     }
