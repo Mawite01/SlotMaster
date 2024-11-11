@@ -47,7 +47,7 @@ class BetController extends Controller
 
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
-                Log::info('Result Signature', ['GeneratedResultSignature' => $signature]);
+                Log::info('Bet Signature', ['GeneratedBetSignature' => $signature]);
                 if ($signature !== $transaction['Signature']) {
                     Log::warning('Signature validation failed', [
                         'transaction' => $transaction,

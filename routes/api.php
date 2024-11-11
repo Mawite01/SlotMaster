@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ReportController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Slot\GetDaySummaryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +57,9 @@ Route::post('Reward', [RewardController::class, 'handleReward']);
 //Route::post('/transaction-details', [ReportController::class, 'getTransactionDetails']);
 // routes/api.php or routes/web.php
 Route::post('/transaction-details/{tranId}', [App\Http\Controllers\Admin\ReportController::class, 'getTransactionDetails']);
+
+Route::post('/GetDaySummary', [GetDaySummaryController::class, 'getDaySummary']);
+
 
 
 
