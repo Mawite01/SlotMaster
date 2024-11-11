@@ -37,8 +37,13 @@ class GetDaySummaryController extends Controller
         ];
 
         // Post data to the provider's API and handle the response
-        $providerApiUrl = config('game.api.url'); // Set this URL in config/services.php or .env
-        $response = Http::post($providerApiUrl, $payload);
+        $providerApiUrl = config('game.api.url') . '/GetDaySummary';
+        //$response = Http::post($providerApiUrl, $payload);
+
+        $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->post($providerApiUrl, $payload);
 
         if ($response->successful()) {
             $providerData = $response->json();
