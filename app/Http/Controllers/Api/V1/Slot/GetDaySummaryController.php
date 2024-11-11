@@ -37,7 +37,7 @@ class GetDaySummaryController extends Controller
         ];
 
         // Post data to the provider's API and handle the response
-        $providerApiUrl = config('game.api.url') . '/GetDaySummary';
+        $providerApiUrl = 'https://api.sm-sspi-uat.com/api/opgateway/v1/op/GetDaySummary';
         //$response = Http::post($providerApiUrl, $payload);
 
         $response = Http::withHeaders([
