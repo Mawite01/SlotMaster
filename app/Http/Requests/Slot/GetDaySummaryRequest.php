@@ -56,33 +56,47 @@ class GetDaySummaryRequest extends FormRequest
     /**
      * Get validated transaction data in a structured array.
      */
-    public function getTransactionData()
+    // public function getTransactionData()
+    // {
+    //     // Check if there is a 'transactions' key in the request, which could indicate an array of transactions
+    //     $transactions = $this->input('transactions', []);
+
+    //     if (empty($transactions)) {
+    //         // If no 'transactions' key is found, assume single transaction structure based on individual fields
+    //         $transactions = [
+    //             [
+    //                 'OperatorId' => $this->getOperatorId(),
+    //                 'RequestDateTime' => $this->getRequestDateTime(),
+    //                 'Signature' => $this->getSignature(),
+    //                 'Currency' => $this->getCurrency(),
+    //             ],
+    //         ];
+    //     } elseif (isset($transactions['OperatorId'])) {
+    //         // If 'transactions' is an associative array (indicating a single transaction), wrap it in an array
+    //         $transactions = [
+    //             $transactions,
+    //         ];
+    //     }
+
+    //     // Log the transactions for debugging
+    //     Log::info('Retrieved Transactions', [
+    //         'transactions' => $transactions,
+    //     ]);
+
+    //     return $transactions;
+    // }
+    public function getTransactionData(): array
     {
-        // Check if there is a 'transactions' key in the request, which could indicate an array of transactions
-        $transactions = $this->input('transactions', []);
+        $transactionData = [
+            'OperatorId' => $this->getOperatorId(),
+            'RequestDateTime' => $this->getRequestDateTime(),
+            'Signature' => $this->getSignature(),
+            'Date' => $this->getRequestDate(),
+        ];
 
-        if (empty($transactions)) {
-            // If no 'transactions' key is found, assume single transaction structure based on individual fields
-            $transactions = [
-                [
-                    'OperatorId' => $this->getOperatorId(),
-                    'RequestDateTime' => $this->getRequestDateTime(),
-                    'Signature' => $this->getSignature(),
-                    'Currency' => $this->getCurrency(),
-                ],
-            ];
-        } elseif (isset($transactions['OperatorId'])) {
-            // If 'transactions' is an associative array (indicating a single transaction), wrap it in an array
-            $transactions = [
-                $transactions,
-            ];
-        }
+        // Log the transaction data for debugging
+        Log::info('Retrieved Transaction Data', ['transactionData' => $transactionData]);
 
-        // Log the transactions for debugging
-        Log::info('Retrieved Transactions', [
-            'transactions' => $transactions,
-        ]);
-
-        return $transactions;
+        return $transactionData;
     }
 }
