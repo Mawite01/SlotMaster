@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('account_number')->nullable();
             $table->string('line_id')->nullable();
             $table->decimal('commission')->default('0.00');
+            $table->string('referral_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('agent_id')->references('id')->on('users')->onDelete('cascade');

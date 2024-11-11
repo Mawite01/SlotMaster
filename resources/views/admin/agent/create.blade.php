@@ -39,7 +39,13 @@
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-
+                                <div class="form-group">
+                                    <label>ReferralCode<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="referral_code" value="{{$referral_code}}" readonly>
+                                    @error('referral_code')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <div class="form-group">
                                     <label>Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="name" value="{{old('name')}}">
