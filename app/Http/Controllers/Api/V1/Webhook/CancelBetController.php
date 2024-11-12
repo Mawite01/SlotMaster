@@ -256,9 +256,10 @@ class CancelBetController extends Controller
 
             DB::commit();
             Log::info('All Bet transactions committed successfully');
+                    $Balance = $request->getMember()->balanceFloat;
 
             // Build a successful response with the final balance of the last player
-            return $this->buildSuccessResponse($NewBalance);
+            return $this->buildSuccessResponse($Balance);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle BetNResult', [
