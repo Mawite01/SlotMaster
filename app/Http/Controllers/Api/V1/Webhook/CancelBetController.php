@@ -57,11 +57,6 @@ class CancelBetController extends Controller
 
                 // Check for duplicate cancellation request
                 $existingTransaction = Bet::where('round_id', $transaction['RoundId'])->first();
-                // if ($existingTransaction && $existingTransaction->status === 'cancelled') {
-                //     Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
-
-                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
-                // }
 
                 // Check if the transaction has an associated result, which would prevent cancellation
                 $associatedResult = Result::where('round_id', $transaction['RoundId'])->first();
@@ -117,6 +112,8 @@ class CancelBetController extends Controller
 
                 }
             }
+             // Add a return response here if the loop completes without hitting a return statement inside
+        return $this->buildSuccessResponse($request->getMember()->balanceFloat);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle CancelBet', [
@@ -129,7 +126,44 @@ class CancelBetController extends Controller
         }
     }
 
-    // public function handleCancelBet(BetWebhookRequest $request): JsonResponse
+
+    private function buildSuccessResponse(float $newBalance): JsonResponse
+    {
+        return response()->json([
+            'Status' => StatusCode::OK->value,
+            'Description' => 'Success',
+            'ResponseDateTime' => now()->format('Y-m-d H:i:s'),
+            'Balance' => round($newBalance, 4),
+        ]);
+    }
+
+    private function buildErrorResponse(StatusCode $statusCode, float $balance = 0): JsonResponse
+    {
+        return response()->json([
+            'Status' => $statusCode->value,
+            'Description' => $statusCode->name,
+            'Balance' => round($balance, 4),
+        ]);
+    }
+
+    private function generateSignature(array $transaction): string
+    {
+        $method = 'CancelBet';
+        $roundId = $transaction['RoundId'];
+        $betId = $transaction['BetId'];
+        $requestTime = $transaction['RequestDateTime'];
+        $operatorCode = $transaction['OperatorId'];
+        $secretKey = config('game.api.secret_key');
+        $playerId = $transaction['PlayerId'];
+
+        return md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
+    }
+
+
+}
+
+
+ // public function handleCancelBet(BetWebhookRequest $request): JsonResponse
     // {
     //     $transactions = $request->getTransactions();
 
@@ -240,36 +274,3 @@ class CancelBetController extends Controller
     //         return response()->json(['message' => 'Failed to handle BetNResult'], 500);
     //     }
     // }
-
-    private function buildSuccessResponse(float $newBalance): JsonResponse
-    {
-        return response()->json([
-            'Status' => StatusCode::OK->value,
-            'Description' => 'Success',
-            'ResponseDateTime' => now()->format('Y-m-d H:i:s'),
-            'Balance' => round($newBalance, 4),
-        ]);
-    }
-
-    private function buildErrorResponse(StatusCode $statusCode, float $balance = 0): JsonResponse
-    {
-        return response()->json([
-            'Status' => $statusCode->value,
-            'Description' => $statusCode->name,
-            'Balance' => round($balance, 4),
-        ]);
-    }
-
-    private function generateSignature(array $transaction): string
-    {
-        $method = 'CancelBet';
-        $roundId = $transaction['RoundId'];
-        $betId = $transaction['BetId'];
-        $requestTime = $transaction['RequestDateTime'];
-        $operatorCode = $transaction['OperatorId'];
-        $secretKey = config('game.api.secret_key');
-        $playerId = $transaction['PlayerId'];
-
-        return md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
-    }
-}

@@ -341,3 +341,8 @@ public function processTransfer(User $from, User $to, TransactionName $transacti
     });
 }
 ---------------
+// if ($existingTransaction && $existingTransaction->status === 'cancelled') {
+                //     Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
+
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
+                // }
