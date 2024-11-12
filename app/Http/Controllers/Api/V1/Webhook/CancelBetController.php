@@ -224,31 +224,31 @@ class CancelBetController extends Controller
                         $transaction['BetAmount']
                     );
 
-                    $request->getMember()->wallet->refreshBalance();
-                    $NewBalance = $request->getMember()->balanceFloat;
+                    // $request->getMember()->wallet->refreshBalance();
+                    // $NewBalance = $request->getMember()->balanceFloat;
 
-                    $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
-                    $game_name = $game_code->game_name;
-                    $provider_name = $game_code->game_provide_name;
+                    // $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
+                    // $game_name = $game_code->game_name;
+                    // $provider_name = $game_code->game_provide_name;
 
-                    // Create the transaction record
-                    Bet::create([
-                        'user_id' => $player->id,
-                        'game_provide_name' => $provider_name,
-                        'game_name' => $game_name,
-                        'operator_id' => $transaction['OperatorId'],
-                        'request_date_time' => $transaction['RequestDateTime'],
-                        'signature' => $transaction['Signature'],
-                        'player_id' => $transaction['PlayerId'],
-                        'currency' => $transaction['Currency'],
-                        'round_id' => $transaction['RoundId'],
-                        'bet_id' => $transaction['BetId'],
-                        'game_code' => $transaction['GameCode'],
-                        'bet_amount' => $transaction['BetAmount'],
-                        'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
-                        'status' => 'cancelled',
-                        'cancelled_at' => now(),
-                    ]);
+                    // // Create the transaction record
+                    // Bet::create([
+                    //     'user_id' => $player->id,
+                    //     'game_provide_name' => $provider_name,
+                    //     'game_name' => $game_name,
+                    //     'operator_id' => $transaction['OperatorId'],
+                    //     'request_date_time' => $transaction['RequestDateTime'],
+                    //     'signature' => $transaction['Signature'],
+                    //     'player_id' => $transaction['PlayerId'],
+                    //     'currency' => $transaction['Currency'],
+                    //     'round_id' => $transaction['RoundId'],
+                    //     'bet_id' => $transaction['BetId'],
+                    //     'game_code' => $transaction['GameCode'],
+                    //     'bet_amount' => $transaction['BetAmount'],
+                    //     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
+                    //     'status' => 'cancelled',
+                    //     'cancelled_at' => now(),
+                    // ]);
 
                     Log::info('Bet Transaction processed successfully', ['BetID' => $transaction['BetId']]);
                 }
