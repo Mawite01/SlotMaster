@@ -39,6 +39,17 @@ class CancelBetNResultController extends Controller
                     );
                 }
 
+                $signature = $this->generateSignature($transaction);
+                Log::info('CancelBetNResult Signature', ['GeneratedCancelBetNResultSignature' => $signature]);
+                if ($signature !== $transaction['Signature']) {
+                    Log::warning('Signature validation failed', [
+                        'transaction' => $transaction,
+                        'generated_signature' => $signature,
+                    ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                }
+
                 // Check if the transaction with this TranId exists and is already processed
                 $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
 
@@ -67,9 +78,9 @@ class CancelBetNResultController extends Controller
                             'currency' => $transaction['Currency'],
                             'tran_id' => $transaction['TranId'],
                             'game_code' => $transaction['GameCode'],
-                            'bet_amount' => $transaction['BetAmount'],
-                            'win_amount' => $transaction['WinAmount'],
-                            'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
+                            //'bet_amount' => $transaction['BetAmount'],
+                           // 'win_amount' => $transaction['WinAmount'],
+                            //'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
                             'tran_date_time' => $transaction['TranDateTime'],
                             'status' => 'processed',
                         ]);
@@ -109,6 +120,20 @@ class CancelBetNResultController extends Controller
             'Description' => $statusCode->name,
             'ResponseDateTime' => now()->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    private function generateSignature(array $transaction): string
+    {
+        $method = 'Result';
+
+        return md5(
+            $method.
+            $transaction['TranId'].
+            $transaction['RequestDateTime'].
+            $transaction['OperatorId'].
+            config('game.api.secret_key').
+            $transaction['PlayerId']
+        );
     }
 }
 

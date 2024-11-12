@@ -25,6 +25,7 @@ class BetNResult extends Model
         'win_amount',
         'net_win',
         'tran_date_time',
+        'provider_code',
         'auth_token',
         'status',
         'cancelled_at',

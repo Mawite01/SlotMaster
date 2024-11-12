@@ -18,17 +18,18 @@ return new class extends Migration
             $table->string('request_date_time', 50); // Using string for format flexibility
             $table->string('signature', 50);
             $table->string('player_id', 50);
-            $table->string('currency', 5);
+            $table->string('currency', 5)->default('MMK');
             $table->string('tran_id', 30);
             $table->string('game_code', 50);
-            $table->decimal('bet_amount', 18, 4);   // Decimal with 4 precision
-            $table->decimal('win_amount', 18, 4);   // Decimal with 4 precision
+            $table->decimal('bet_amount', 18, 4)->default('0.00');   // Decimal with 4 precision
+            $table->decimal('win_amount', 18, 4)->default('0.00');   // Decimal with 4 precision
             $table->decimal('net_win', 18, 4)->default(0.00);      // Decimal with 4 precision
             //$table->timestamp('tran_date_time')->useCurrent(); // ISO 8601 Standard timestamp
             //$table->timestamp('tran_date_time');
 
             $table->string('tran_date_time', 100);
-            $table->string('auth_token', 500)->nullable();
+            $table->string('provider_code')->default('code_1');
+            $table->string('auth_token', 500)->default('default_password');
             $table->string('status')->default('unprocessed'); // Default to 'unprocessed' for new transactions
             $table->timestamp('cancelled_at')->nullable(); // Set when transaction is cancelled
 
