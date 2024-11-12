@@ -23,7 +23,7 @@ class CancelBetController extends Controller
 {
     use UseWebhook;
 
-   public function handleCancelBet(CancelBetNResultRequest $request): JsonResponse
+    public function handleCancelBet(CancelBetNResultRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
@@ -34,10 +34,11 @@ class CancelBetController extends Controller
             foreach ($transactions as $transaction) {
                 // Get the player
                 $player = User::where('user_name', $transaction['PlayerId'])->first();
-                if (!$player) {
+                if (! $player) {
                     Log::warning('Invalid player detected', [
                         'PlayerId' => $transaction['PlayerId'],
                     ]);
+
                     return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword);
                 }
 
@@ -49,6 +50,7 @@ class CancelBetController extends Controller
                         'transaction' => $transaction,
                         'generated_signature' => $signature,
                     ]);
+
                     return $this->buildErrorResponse(StatusCode::InvalidSignature);
                 }
 
@@ -56,19 +58,21 @@ class CancelBetController extends Controller
                 $existingTransaction = Bet::where('tran_id', $transaction['TranId'])->first();
                 if ($existingTransaction && $existingTransaction->status === 'cancelled') {
                     Log::warning('Duplicate cancellation request detected', ['TranId' => $transaction['TranId']]);
+
                     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
                 }
 
                 // Check if the transaction has an associated result, which would prevent cancellation
-                $associatedResult = Result::where('tran_id', $transaction['TranId'])->first();
+                $associatedResult = Result::where('round_id', $transaction['RoundId'])->first();
                 if ($associatedResult) {
-                    Log::info('Cancellation not allowed - bet result already processed', ['TranId' => $transaction['TranId']]);
+                    Log::info('Cancellation not allowed - bet result already processed', ['TranId' => $transaction['RoundId']]);
+
                     return $this->buildErrorResponse(StatusCode::InternalServerError); // 900500 error if result exists
                 }
 
                 // Process the cancellation
-                if (!$existingTransaction || $existingTransaction->status !== 'cancelled') {
-                    Log::info('Cancelling Bet Transaction', ['TranId' => $transaction['TranId']]);
+                if (! $existingTransaction || $existingTransaction->status !== 'cancelled') {
+                    Log::info('Cancelling Bet Transaction', ['TranId' => $transaction['RoundId']]);
 
                     // Update the existing transaction status to cancelled
                     if ($existingTransaction) {
@@ -82,31 +86,32 @@ class CancelBetController extends Controller
 
                         // If no transaction record exists, create a new one marked as cancelled
                         $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
-                $game_name = $game_code->game_name;
-                $provider_name = $game_code->game_provide_name;
-                // Create the transaction record
-                Bet::create([
-                    'user_id' => $player->id,
-                    'game_provide_name' => $provider_name,
-                    'game_name' => $game_name,
-                    'operator_id' => $transaction['OperatorId'],
-                    'request_date_time' => $transaction['RequestDateTime'],
-                    'signature' => $transaction['Signature'],
-                    'player_id' => $transaction['PlayerId'],
-                    'currency' => $transaction['Currency'],
-                    'round_id' => $transaction['RoundId'],
-                    'bet_id' => $transaction['BetId'],
-                    'game_code' => $transaction['GameCode'],
-                    'bet_amount' => $transaction['BetAmount'],
-                    'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
-                    'status' => 'cancelled',
-                    'cancelled_at' => now(),
-                ]);
+                        $game_name = $game_code->game_name;
+                        $provider_name = $game_code->game_provide_name;
+                        // Create the transaction record
+                        Bet::create([
+                            'user_id' => $player->id,
+                            'game_provide_name' => $provider_name,
+                            'game_name' => $game_name,
+                            'operator_id' => $transaction['OperatorId'],
+                            'request_date_time' => $transaction['RequestDateTime'],
+                            'signature' => $transaction['Signature'],
+                            'player_id' => $transaction['PlayerId'],
+                            'currency' => $transaction['Currency'],
+                            'round_id' => $transaction['RoundId'],
+                            'bet_id' => $transaction['BetId'],
+                            'game_code' => $transaction['GameCode'],
+                            'bet_amount' => $transaction['BetAmount'],
+                            'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
+                            'status' => 'cancelled',
+                            'cancelled_at' => now(),
+                        ]);
 
-                Log::info('Bet Transaction  processed successfully', ['BetID' => $transaction['BetId']]);
-                }
+                        Log::info('Bet Transaction  processed successfully', ['BetID' => $transaction['BetId']]);
+                    }
 
                     DB::commit();
+
                     return $this->buildSuccessResponse($NewBalance);
 
                 }
@@ -118,10 +123,10 @@ class CancelBetController extends Controller
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
             ]);
+
             return response()->json(['message' => 'Failed to handle CancelBet'], 500);
         }
     }
-
 
     // public function handleCancelBet(BetWebhookRequest $request): JsonResponse
     // {
@@ -168,8 +173,6 @@ class CancelBetController extends Controller
 
     //                 return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
     //             }
-
-
 
     //             $PlayerBalance = $request->getMember()->balanceFloat;
 
