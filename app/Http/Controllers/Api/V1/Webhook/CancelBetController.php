@@ -66,6 +66,12 @@ class CancelBetController extends Controller
                     return $this->buildErrorResponse(StatusCode::InternalServerError); // 900500 error if result exists
                 }
 
+                if ($existingTransaction && $existingTransaction->status === 'cancelled') {
+                    Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
+
+                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
+                }
+
                 // Process the cancellation
                 if (! $existingTransaction || $existingTransaction->status !== 'cancelled') {
                     Log::info('Cancelling Bet Transaction', ['TranId' => $transaction['RoundId']]);
