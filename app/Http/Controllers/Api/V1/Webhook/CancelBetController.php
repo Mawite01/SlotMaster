@@ -58,15 +58,25 @@ class CancelBetController extends Controller
                 }
 
                 //Check for duplicate transaction
-                $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
-                if ($existingTransaction) {
-                    Log::warning('Duplicate BetId detected', [
-                        'BetId' => $transaction['BetId'],
-                    ]);
-                    $Balance = $request->getMember()->balanceFloat;
+                // $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
+                // if ($existingTransaction) {
+                //     Log::warning('Duplicate BetId detected', [
+                //         'BetId' => $transaction['BetId'],
+                //     ]);
+                //     $Balance = $request->getMember()->balanceFloat;
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
-                }
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+                // }
+
+                 $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->where('status', 'cancelled')->first();
+            if ($existingTransaction) {
+                Log::warning('Duplicate BetId detected for cancellation', [
+                    'BetId' => $transaction['BetId'],
+                ]);
+                $Balance = $request->getMember()->balanceFloat;
+
+                return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
+            }
 
                 $PlayerBalance = $request->getMember()->balanceFloat;
 
