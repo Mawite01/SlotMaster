@@ -61,6 +61,10 @@ class CancelBetRequest extends FormRequest
     {
         return $this->get('RoundId');
     }
+    public function getBetId()
+    {
+        return $this->get('BetId');
+    }
 
     public function getGameCode()
     {
@@ -128,6 +132,7 @@ class CancelBetRequest extends FormRequest
                     'PlayerId' => $this->getPlayerId(),
                     'Currency' => $this->getCurrency(),
                     'RoundId' => $this->getRoundId(),
+                    'BetId' => $this->getBetId(),
                     'GameCode' => $this->getGameCode(),
                     'BetAmount' => $this->getBetAmount(),
                     'TranDateTime' => $this->getTranDateTime(),
