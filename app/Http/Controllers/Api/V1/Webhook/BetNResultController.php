@@ -118,6 +118,7 @@ class BetNResultController extends Controller
                     'net_win' => $transaction['WinAmount'] - $transaction['BetAmount'],
                     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
                     'auth_token' => $transaction['AuthToken'] ?? 'default_password',
+                    'status' => 'processed',
 
                 ]);
 

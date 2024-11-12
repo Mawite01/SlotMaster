@@ -20,7 +20,7 @@ enum StatusCode: int
     case ForbiddenAccess = 403;
     case ServiceMaintenance = 503;
     case InvalidOperatorID = 900401;
-    case NotEligible = 900300;
+    case NotEligibleCancel = 900300;
     case InvalidTranID = 900408;
 
 }
