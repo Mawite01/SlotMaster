@@ -84,7 +84,7 @@ class CancelBetController extends Controller
                     } else {
                         $request->getMember()->wallet->refreshBalance();
 
-                        $NewBalance = $request->getMember()->balanceFloat;
+                        $newBalance = $request->getMember()->balanceFloat;
 
                         // If no transaction record exists, create a new one marked as cancelled
                         $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
@@ -114,12 +114,15 @@ class CancelBetController extends Controller
 
                     DB::commit();
 
-                    return $this->buildSuccessResponse($NewBalance);
+                    return $this->buildSuccessResponse($newBalance);
 
                 }
             }
              // Add a return response here if the loop completes without hitting a return statement inside
-        return $this->buildSuccessResponse($request->getMember()->balanceFloat);
+             $request->getMember()->wallet->refreshBalance();
+
+            $Balance = $request->getMember()->balanceFloat;
+        return $this->buildSuccessResponse($Balance);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle CancelBet', [
