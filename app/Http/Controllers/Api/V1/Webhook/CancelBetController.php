@@ -121,8 +121,8 @@ class CancelBetController extends Controller
             return response()->json(['message' => 'Failed to handle CancelBet'], 500);
         }
     }
-   
-   
+
+
     // public function handleCancelBet(BetWebhookRequest $request): JsonResponse
     // {
     //     $transactions = $request->getTransactions();
@@ -169,7 +169,7 @@ class CancelBetController extends Controller
     //                 return $this->buildErrorResponse(StatusCode::DuplicateTransaction, $Balance);
     //             }
 
-                
+
 
     //             $PlayerBalance = $request->getMember()->balanceFloat;
 
