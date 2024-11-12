@@ -14,7 +14,7 @@ class GameListController extends Controller
     {
         if ($request->ajax()) {
             $data = GameList::with(['gameType', 'product']);
-      
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('game_type', function ($row) {

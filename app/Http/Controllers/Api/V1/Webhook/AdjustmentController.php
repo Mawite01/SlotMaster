@@ -50,12 +50,13 @@ class AdjustmentController extends Controller
                     return $this->buildErrorResponse(StatusCode::InvalidSignature, 0);
                 }
 
-                 // Check for duplicate transaction
+                // Check for duplicate transaction
                 $existingTransaction = Adjustment::where('tran_id', $transaction['TranId'])->first();
                 if ($existingTransaction) {
                     Log::warning('Duplicate TranId detected', [
                         'TranId' => $transaction['TranId'],
                     ]);
+
                     return $this->buildErrorResponse(StatusCode::DuplicateTransaction); // Return duplicate transaction error
                 }
 

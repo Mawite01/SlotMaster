@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\Slot;
 
+use App\Enums\StatusCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\GetDaySummaryRequest;
-use App\Enums\StatusCode;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GetDaySummaryController extends Controller
 {
@@ -41,9 +41,9 @@ class GetDaySummaryController extends Controller
         //$response = Http::post($providerApiUrl, $payload);
 
         $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ])->post($providerApiUrl, $payload);
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post($providerApiUrl, $payload);
 
         if ($response->successful()) {
             $providerData = $response->json();
@@ -66,7 +66,7 @@ class GetDaySummaryController extends Controller
         $requestDateTime = $transactionData['RequestDateTime'];
         $secretKey = config('game.api.secret_key'); // Fetch secret key from config
 
-        return md5($method . $requestDateTime . $operatorId . $secretKey);
+        return md5($method.$requestDateTime.$operatorId.$secretKey);
     }
 
     private function buildSuccessResponse(array $data): JsonResponse

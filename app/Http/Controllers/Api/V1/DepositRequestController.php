@@ -17,11 +17,11 @@ class DepositRequestController extends Controller
     {
         $data = $request->validate([
             'agent_payment_type_id' => ['required', 'integer'],
-            'amount' => ['required' , 'integer'],
+            'amount' => ['required', 'integer'],
             'refrence_no' => ['required', 'digits:6'],
         ]);
         $player = Auth::user();
-       
+
         $deposit = DepositRequest::create([
             'agent_payment_type_id' => $request->agent_payment_type_id,
             'user_id' => $player->id,
@@ -33,7 +33,6 @@ class DepositRequestController extends Controller
         return $this->success($deposit, 'Deposit Request Success');
 
     }
-
 
     public function log()
     {

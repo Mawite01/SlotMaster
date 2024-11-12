@@ -25,4 +25,6 @@ enum TransactionName: string
 
     case CreditAdjustment = 'credit_adjustment';
     case DebitAdjustment = 'debit_adjustment';
+    case Win = 'win';
+    case Loss = 'loss';
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\V1\Slot;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Webhook\LaunchGameService;
 use App\Http\Requests\Slot\LaunchGameRequest;
+use App\Services\Webhook\LaunchGameService;
 use App\Traits\HttpResponses;
+use Illuminate\Http\Request;
 
 class LaunchGameController extends Controller
 {
@@ -22,6 +22,7 @@ class LaunchGameController extends Controller
     {
         $this->gameService = $gameService;
     }
+
     public function LaunchGame(LaunchGameRequest $request)
     {
         $response = $this->gameService->gameLogin(

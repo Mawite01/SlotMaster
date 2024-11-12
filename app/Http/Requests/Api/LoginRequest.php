@@ -22,7 +22,8 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-         Log::info($this->all());
+        Log::info($this->all());
+
         return [
             'phone' => ['required', 'regex:/^[0-9]+$/'],
             'password' => ['required', 'string', 'min:6'],

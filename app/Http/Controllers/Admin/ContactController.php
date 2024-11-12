@@ -34,12 +34,12 @@ class ContactController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'value' => 'required'
+            'value' => 'required',
         ]);
         Contact::create([
             'name' => $request->name,
             'value' => $request->value,
-            'agent_id' => Auth::id()
+            'agent_id' => Auth::id(),
         ]);
 
         return redirect(route('admin.contact.index'))->with('success', 'New Contact Created Successfully.');
@@ -68,9 +68,9 @@ class ContactController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'value' => 'required'
+            'value' => 'required',
         ]);
-        
+
         $contact->update([
             'name' => $request->name,
             'value' => $request->value,
@@ -86,7 +86,7 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $contact->delete();
-           
+
         return redirect(route('admin.contact.index'))->with('success', 'New Contact Updated Successfully.');
 
     }

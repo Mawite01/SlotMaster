@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Slot;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\Slot\GameDetailResource;
 use App\Http\Resources\GameListResource;
+use App\Http\Resources\Slot\GameDetailResource;
 use App\Http\Resources\Slot\HotGameListResource;
 use App\Models\Admin\GameList;
 use App\Models\Admin\GameType;
 use App\Traits\HttpResponses;
-
+use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
@@ -72,10 +71,9 @@ class GameController extends Controller
         return $this->success(GameDetailResource::collection($gameLists), 'Hot Game Detail Successfully');
     }
 
-
     public function gameFilter(Request $request)
     {
-        $gameLists = GameList::where('game_name', 'like', '%' . $request->name . '%')->get();
+        $gameLists = GameList::where('game_name', 'like', '%'.$request->name.'%')->get();
 
         return $this->success(GameDetailResource::collection($gameLists), 'Game Detail Successfully');
 

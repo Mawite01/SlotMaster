@@ -79,7 +79,7 @@ class GameTypeProductTableSeeder extends Seeder
                 'image' => 'epic_win.jfif',
                 'rate' => '1.0000',
             ],
-             [
+            [
                 'product_id' => 11,  // MGH5
                 'game_type_id' => 2,  // Other
                 'image' => 'yellow_bat.png',

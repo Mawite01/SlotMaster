@@ -10,5 +10,4 @@ class Contact extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'agent_id', 'value'];
-
 }

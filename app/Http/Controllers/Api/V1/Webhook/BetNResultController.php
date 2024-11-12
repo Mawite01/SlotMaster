@@ -77,16 +77,31 @@ class BetNResultController extends Controller
                 }
 
                 // Process the bet
-                $this->processTransfer(
-                    $player,
-                    User::adminUser(), // Assuming admin user as the receiving party
-                    TransactionName::Stake,
-                    $transaction['BetAmount']
-                );
+                // $this->processTransfer(
+                //     $player,
+                //     User::adminUser(), // Assuming admin user as the receiving party
+                //     TransactionName::Stake,
+                //     $transaction['BetAmount']
+                // );
 
+                // $request->getMember()->wallet->refreshBalance();
+
+                // $NewBalance = $request->getMember()->balanceFloat;
+                // Calculate NetWin based on the WinAmount and BetAmount
+                $netWin = $transaction['WinAmount'] - $transaction['BetAmount'];
+
+                // Adjust the balance based on NetWin
+                if ($netWin > 0) {
+                    // Increase balance by NetWin
+                    $this->processTransfer(User::adminUser(), $player, TransactionName::Win, $netWin);
+                } elseif ($netWin < 0) {
+                    // Decrease balance by the absolute value of NetWin
+                    $this->processTransfer($player, User::adminUser(), TransactionName::Loss, abs($netWin));
+                }
+
+                // Refresh and get the updated balance
                 $request->getMember()->wallet->refreshBalance();
-
-                $NewBalance = $request->getMember()->balanceFloat;
+                $newBalance = $request->getMember()->balanceFloat;
 
                 // Create the transaction record
                 BetNResult::create([
@@ -113,7 +128,7 @@ class BetNResultController extends Controller
             Log::info('All transactions committed successfully');
 
             // Build a successful response with the final balance of the last player
-            return $this->buildSuccessResponse($NewBalance);
+            return $this->buildSuccessResponse($newBalance);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle BetNResult', [

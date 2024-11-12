@@ -9,10 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-
 class LaunchGameService
 {
-
     public function gameLogin(string $gameCode, bool $launchDemo = false)
     {
         $operatorId = config('game.api.operator_code');

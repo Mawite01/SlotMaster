@@ -50,7 +50,7 @@ class ResultController extends Controller
                     return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
                 }
 
-                 // Check for duplicate ResultId
+                // Check for duplicate ResultId
                 $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
                 if ($existingTransaction) {
                     Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);

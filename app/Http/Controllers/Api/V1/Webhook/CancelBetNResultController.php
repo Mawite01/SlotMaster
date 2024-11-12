@@ -7,12 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Slot\CancelBetNResultRequest;
 use App\Models\User;
 use App\Models\Webhook\BetNResult;
+use App\Services\PlaceBetWebhookService;
 use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\PlaceBetWebhookService;
-
 
 class CancelBetNResultController extends Controller
 {
@@ -21,8 +20,6 @@ class CancelBetNResultController extends Controller
     public function handleCancelBetNResult(CancelBetNResultRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
-
-
 
         DB::beginTransaction();
         try {
@@ -47,11 +44,12 @@ class CancelBetNResultController extends Controller
 
                 if ($existingTransaction && $existingTransaction->status === 'processed') {
                     Log::info('BetNResult already processed', ['TranId' => $transaction['TranId']]);
+
                     return $this->buildErrorResponse(StatusCode::NotEligible); // 900300 status for already processed
                 }
 
                 // If unprocessed, mark as processed and return 200 status without adjusting balance
-                if (!$existingTransaction || $existingTransaction->status !== 'processed') {
+                if (! $existingTransaction || $existingTransaction->status !== 'processed') {
                     Log::info('BetNResult unprocessed, setting status to processed', ['TranId' => $transaction['TranId']]);
 
                     // Mark the transaction as processed
@@ -80,6 +78,7 @@ class CancelBetNResultController extends Controller
                     }
 
                     DB::commit();
+
                     //return $this->buildSuccessResponse();
                     return $this->buildSuccessResponse($NewBalance);
 
@@ -98,8 +97,7 @@ class CancelBetNResultController extends Controller
         }
     }
 
-        private function buildSuccessResponse(float $newBalance): JsonResponse
-
+    private function buildSuccessResponse(float $newBalance): JsonResponse
     {
         return response()->json([
             'Status' => StatusCode::OK->value,

@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-
 class AuthController extends Controller
 {
     use HttpResponses;
@@ -153,7 +152,7 @@ class AuthController extends Controller
         return $this->success(new AgentResource($player->parent), 'Agent Information List');
     }
 
-    public function getContact()  
+    public function getContact()
     {
         $player = Auth::user();
 

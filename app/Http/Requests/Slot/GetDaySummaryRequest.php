@@ -5,7 +5,6 @@ namespace App\Http\Requests\Slot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 
-
 class GetDaySummaryRequest extends FormRequest
 {
     /**
@@ -48,6 +47,7 @@ class GetDaySummaryRequest extends FormRequest
     {
         return $this->get('Date');
     }
+
     public function getCurrency()
     {
         return 'MMK';
