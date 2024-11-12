@@ -56,12 +56,12 @@ class CancelBetController extends Controller
                 }
 
                 // Check for duplicate cancellation request
-                $existingTransaction = Bet::where('round_id', $transaction['RoundId'])->first();
-                if ($existingTransaction && $existingTransaction->status === 'cancelled') {
-                    Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
+                // $existingTransaction = Bet::where('round_id', $transaction['RoundId'])->first();
+                // if ($existingTransaction && $existingTransaction->status === 'cancelled') {
+                //     Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
 
-                    return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
-                }
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
+                // }
 
                 // Check if the transaction has an associated result, which would prevent cancellation
                 $associatedResult = Result::where('round_id', $transaction['RoundId'])->first();
