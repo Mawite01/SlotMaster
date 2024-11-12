@@ -55,9 +55,9 @@ class CancelBetController extends Controller
                 }
 
                 // Check for duplicate cancellation request
-                $existingTransaction = Bet::where('tran_id', $transaction['TranId'])->first();
+                $existingTransaction = Bet::where('round_id', $transaction['RoundId'])->first();
                 if ($existingTransaction && $existingTransaction->status === 'cancelled') {
-                    Log::warning('Duplicate cancellation request detected', ['TranId' => $transaction['TranId']]);
+                    Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
 
                     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
                 }
@@ -65,7 +65,7 @@ class CancelBetController extends Controller
                 // Check if the transaction has an associated result, which would prevent cancellation
                 $associatedResult = Result::where('round_id', $transaction['RoundId'])->first();
                 if ($associatedResult) {
-                    Log::info('Cancellation not allowed - bet result already processed', ['TranId' => $transaction['RoundId']]);
+                    Log::info('Cancellation not allowed - bet result already processed', ['RoundId' => $transaction['RoundId']]);
 
                     return $this->buildErrorResponse(StatusCode::InternalServerError); // 900500 error if result exists
                 }
