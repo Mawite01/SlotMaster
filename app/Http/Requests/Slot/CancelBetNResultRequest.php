@@ -51,7 +51,6 @@ class CancelBetNResultRequest extends FormRequest
         return $this->get('ProviderCode');
     }
 
-
     public function getRequestDateTime()
     {
         return $this->get('RequestDateTime');
@@ -139,7 +138,7 @@ class CancelBetNResultRequest extends FormRequest
                     'Currency' => $this->getCurrency(),
                     'TranId' => $this->getTranId(),
                     'GameCode' => $this->getGameCode(),
-                   // 'BetAmount' => $this->getBetAmount(),
+                    // 'BetAmount' => $this->getBetAmount(),
                     //'WinAmount' => $this->getWinAmount(),
                     'TranDateTime' => $this->getTranDateTime(),
                     'ProviderCode' => $this->getProviderCode(),

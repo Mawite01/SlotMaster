@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Slot;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Services\Webhook\CancelBetNResultWebhookValidator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class CancelBetRequest extends FormRequest
 {
@@ -35,8 +35,6 @@ class CancelBetRequest extends FormRequest
         ];
     }
 
-
-
     public function getOperatorId()
     {
         return $this->get('OperatorId');
@@ -61,6 +59,7 @@ class CancelBetRequest extends FormRequest
     {
         return $this->get('RoundId');
     }
+
     public function getBetId()
     {
         return $this->get('BetId');
