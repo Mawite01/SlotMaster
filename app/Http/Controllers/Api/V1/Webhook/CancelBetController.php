@@ -18,12 +18,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Slot\CancelBetRequest;
 
 class CancelBetController extends Controller
 {
     use UseWebhook;
 
-    public function handleCancelBet(CancelBetNResultRequest $request): JsonResponse
+    public function handleCancelBet(CancelBetRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
 
