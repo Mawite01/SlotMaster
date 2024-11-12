@@ -41,14 +41,14 @@ class CancelBetNResultController extends Controller
 
                 $signature = $this->generateSignature($transaction);
                 Log::info('CancelBetNResult Signature', ['GeneratedCancelBetNResultSignature' => $signature]);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
+                // if ($signature !== $transaction['Signature']) {
+                //     Log::warning('Signature validation failed', [
+                //         'transaction' => $transaction,
+                //         'generated_signature' => $signature,
+                //     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
-                }
+                //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                // }
 
                 // Check if the transaction with this TranId exists and is already processed
                 $existingTransaction = BetNResult::where('tran_id', $transaction['TranId'])->first();
