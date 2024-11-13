@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\GameTypeProductController;
 use App\Http\Controllers\Admin\GetBetDetailController;
 use App\Http\Controllers\Admin\GSCReportController;
 use App\Http\Controllers\Admin\Master\MasterController;
+use App\Http\Controllers\Admin\Owner\OwnerController;
 use App\Http\Controllers\Admin\PaymentTypeController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\Player\PlayerController;
@@ -84,6 +85,17 @@ Route::group([
     Route::put('agent/{id}/ban', [AgentController::class, 'banAgent'])->name('agent.ban');
     Route::get('agent-changepassword/{id}', [AgentController::class, 'getChangePassword'])->name('agent.getChangePassword');
     Route::post('agent-changepassword/{id}', [AgentController::class, 'makeChangePassword'])->name('agent.makeChangePassword');
+
+    Route::resource('owner', OwnerController::class);
+    Route::get('owner-cash-in/{id}', [OwnerController::class, 'getCashIn'])->name('owner.getCashIn');
+    Route::post('owner-cash-in/{id}', [OwnerController::class, 'makeCashIn'])->name('owner.makeCashIn');
+    Route::get('mastownerer/cash-out/{id}', [OwnerController::class, 'getCashOut'])->name('owner.getCashOut');
+    Route::post('owner/cash-out/update/{id}', [OwnerController::class, 'makeCashOut'])
+        ->name('owner.makeCashOut');
+    Route::put('owner/{id}/ban', [OwnerController::class, 'banOwner'])->name('owner.ban');
+    Route::get('owner-changepassword/{id}', [OwnerController::class, 'getChangePassword'])->name('owner.getChangePassword');
+    Route::post('owner-changepassword/{id}', [OwnerController::class, 'makeChangePassword'])->name('owner.makeChangePassword');
+
 
     Route::get('agent-to-player-deplogs', [AgentController::class, 'AgentToPlayerDepositLog'])->name('agent.AgentToPlayerDepLog');
 

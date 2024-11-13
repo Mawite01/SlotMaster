@@ -30,7 +30,7 @@ class AgentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    private const AGENT_ROLE = 2;
+    private const AGENT_ROLE = 3;
 
     public function index(): View
     {
@@ -90,7 +90,7 @@ class AgentController extends Controller
             [
                 'password' => Hash::make($inputs['password']),
                 'agent_id' => Auth::id(),
-                'type' => UserType::Admin,
+                'type' => UserType::Agent,
             ]
         );
 
@@ -235,7 +235,7 @@ class AgentController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'P'.$randomNumber;
+        return 'A'.$randomNumber;
     }
 
     public function banAgent($id): RedirectResponse

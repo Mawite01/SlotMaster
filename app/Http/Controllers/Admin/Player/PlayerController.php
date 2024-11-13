@@ -24,7 +24,7 @@ class PlayerController extends Controller
 {
     protected $userService;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     public function __construct(UserService $userService)
     {
@@ -316,7 +316,7 @@ class PlayerController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'LKM'.$randomNumber;
+        return 'P'.$randomNumber;
     }
 
     private function getRefrenceId($prefix = 'REF')

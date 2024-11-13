@@ -104,12 +104,12 @@
                                 </p>
                             </a>
                         </li>
-                        @can('master_index')
+                        @can('owner_index')
                             <li class="nav-item">
-                                <a href="{{ route('admin.master.index') }}" class="nav-link">
+                                <a href="{{ route('admin.owner.index') }}" class="nav-link">
                                     <i class="fas fa-users"></i>
                                     <p>
-                                        Master List
+                                        Owner List
                                     </p>
                                 </a>
                             </li>
