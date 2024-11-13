@@ -25,7 +25,7 @@ class AuthController extends Controller
 {
     use HttpResponses;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     public function login(LoginRequest $request)
     {
@@ -165,7 +165,7 @@ class AuthController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'SB'.$randomNumber;
+        return 'P'.$randomNumber;
     }
 
     private function isExistingUserForAgent($phone, $agent_id)
