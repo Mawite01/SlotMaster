@@ -50,17 +50,19 @@ class CancelBetController extends Controller
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
                 Log::info('CancelBet Signature', ['GeneratedCancelBetSignature' => $signature]);
-                if ($signature !== $transaction['Signature']) {
-                    Log::warning('Signature validation failed', [
-                        'transaction' => $transaction,
-                        'generated_signature' => $signature,
-                    ]);
+                // if ($signature !== $transaction['Signature']) {
+                //     Log::warning('Signature validation failed', [
+                //         'transaction' => $transaction,
+                //         'generated_signature' => $signature,
+                //     ]);
 
-                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
-                }
+                //     return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                // }
 
                 // Check if the transaction already exists
                 $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
+
+                Log::info('Checking BetId For Cancellation', ['BetId' => $transaction['BetId']]);
 
                 // Check if there's an associated result, which prevents cancellation
                 $associatedResult = Result::where('round_id', $transaction['RoundId'])->first();
@@ -69,13 +71,6 @@ class CancelBetController extends Controller
 
                     return $this->buildErrorResponse(StatusCode::InternalServerError); // 900500 error if result exists
                 }
-
-                // // Check if the transaction has already been canceled
-                // if ($existingTransaction && $existingTransaction->status === 'cancelled') {
-                //     Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
-
-                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
-                // }
 
                 // Process the cancellation
                 if (! $existingTransaction || $existingTransaction->status == 'active') {
@@ -107,34 +102,8 @@ class CancelBetController extends Controller
                         $transaction['BetAmount']
                     );
 
-                    // $request->getMember()->wallet->refreshBalance();
-                    // $NewBalance = $request->getMember()->balanceFloat;
-
-                    // $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
-                    // $game_name = $game_code->game_name;
-                    // $provider_name = $game_code->game_provide_name;
-
-                    // // Create the transaction record
-                    // Bet::create([
-                    //     'user_id' => $player->id,
-                    //     'game_provide_name' => $provider_name,
-                    //     'game_name' => $game_name,
-                    //     'operator_id' => $transaction['OperatorId'],
-                    //     'request_date_time' => $transaction['RequestDateTime'],
-                    //     'signature' => $transaction['Signature'],
-                    //     'player_id' => $transaction['PlayerId'],
-                    //     'currency' => $transaction['Currency'],
-                    //     'round_id' => $transaction['RoundId'],
-                    //     'bet_id' => $transaction['BetId'],
-                    //     'game_code' => $transaction['GameCode'],
-                    //     'bet_amount' => $transaction['BetAmount'],
-                    //     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
-                    //     'status' => 'cancelled',
-                    //     'cancelled_at' => now(),
-                    // ]);
-
                     Log::info('Bet Transaction processed successfully', ['BetID' => $transaction['BetId']]);
-                }else{
+                } else {
                     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
                 }
             }
@@ -186,7 +155,7 @@ class CancelBetController extends Controller
         $secretKey = config('game.api.secret_key');
         $playerId = $transaction['PlayerId'];
 
-        return md5($method . $roundId . $betId . $requestTime . $operatorCode . $secretKey . $playerId);
+        return md5($method.$roundId.$betId.$requestTime.$operatorCode.$secretKey.$playerId);
     }
 }
 

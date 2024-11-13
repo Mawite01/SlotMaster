@@ -342,3 +342,36 @@ public function processTransfer(User $from, User $to, TransactionName $transacti
 }
 ---------------
 
+ // // Check if the transaction has already been canceled
+                // if ($existingTransaction && $existingTransaction->status === 'cancelled') {
+                //     Log::warning('Duplicate cancellation request detected', ['RoundId' => $transaction['RoundId']]);
+
+                //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
+                // }
+
+
+                // $request->getMember()->wallet->refreshBalance();
+                    // $NewBalance = $request->getMember()->balanceFloat;
+
+                    // $game_code = GameList::where('game_code', $transaction['GameCode'])->first();
+                    // $game_name = $game_code->game_name;
+                    // $provider_name = $game_code->game_provide_name;
+
+                    // // Create the transaction record
+                    // Bet::create([
+                    //     'user_id' => $player->id,
+                    //     'game_provide_name' => $provider_name,
+                    //     'game_name' => $game_name,
+                    //     'operator_id' => $transaction['OperatorId'],
+                    //     'request_date_time' => $transaction['RequestDateTime'],
+                    //     'signature' => $transaction['Signature'],
+                    //     'player_id' => $transaction['PlayerId'],
+                    //     'currency' => $transaction['Currency'],
+                    //     'round_id' => $transaction['RoundId'],
+                    //     'bet_id' => $transaction['BetId'],
+                    //     'game_code' => $transaction['GameCode'],
+                    //     'bet_amount' => $transaction['BetAmount'],
+                    //     'tran_date_time' => Carbon::parse($transaction['TranDateTime'])->format('Y-m-d H:i:s'),
+                    //     'status' => 'cancelled',
+                    //     'cancelled_at' => now(),
+                    // ]);
