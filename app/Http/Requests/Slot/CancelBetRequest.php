@@ -30,7 +30,7 @@ class CancelBetRequest extends FormRequest
             'GameCode' => 'required|string|max:50',
             'BetAmount' => 'required|numeric',
             'TranDateTime' => 'required|date',
-            'ProviderCode' => 'nullable|numeric',
+            'ProviderCode' => 'nullable|string',
 
         ];
     }
