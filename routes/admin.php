@@ -58,9 +58,12 @@ Route::group([
     Route::resource('contact', ContactController::class);
     Route::resource('paymentTypes', PaymentTypeController::class);
     Route::resource('bank', BankController::class);
-    Route::get('gametypes', [GameTypeProductController::class, 'index'])->name('gametypes.index');
+
+     // provider Game Type Start
+     Route::get('gametypes', [GameTypeProductController::class, 'index'])->name('gametypes.index');
     Route::get('gametypes/{game_type_id}/product/{product_id}', [GameTypeProductController::class, 'edit'])->name('gametypes.edit');
     Route::post('gametypes/{game_type_id}/product/{product_id}', [GameTypeProductController::class, 'update'])->name('gametypes.update');
+    // provider Game Type End
 
     Route::get('transaction-list', [TransactionController::class, 'index'])->name('transaction');
     // game list start
@@ -122,6 +125,8 @@ Route::group([
     Route::get('get-bet-detail/{wagerId}', [GetBetDetailController::class, 'getBetDetail'])->name('getBetDetail.show');
 
     Route::resource('/product_code', App\Http\Controllers\Admin\ProductCodeController::class);
+
+
 
     Route::group(['prefix' => 'slot'], function () {
         Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');
