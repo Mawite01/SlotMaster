@@ -26,7 +26,7 @@ class User extends Authenticatable implements Wallet
 {
     use HasApiTokens, HasFactory, HasWalletFloat, Notifiable;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     /**
      * The attributes that are mass assignable.
@@ -137,7 +137,7 @@ class User extends Authenticatable implements Wallet
 
     public static function adminUser()
     {
-        return self::where('type', UserType::Admin)->first();
+        return self::where('type', UserType::SystemWallet)->first();
     }
 
     public function seamlessTransactions()
