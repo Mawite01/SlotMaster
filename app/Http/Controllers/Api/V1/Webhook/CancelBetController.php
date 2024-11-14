@@ -94,7 +94,7 @@ class CancelBetController extends Controller
                     );
 
                     Log::info('Bet Transaction processed successfully', ['BetID' => $transaction['BetId']]);
-                } 
+                }
                 // else {
                 //     return $this->buildErrorResponse(StatusCode::DuplicateTransaction);
                 // }
