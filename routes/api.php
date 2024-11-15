@@ -51,7 +51,7 @@ Route::post('Reward', [RewardController::class, 'handleReward']);
 // routes/api.php or routes/web.php
 Route::post('/transaction-details/{tranId}', [App\Http\Controllers\Admin\ReportController::class, 'getTransactionDetails']);
 
-Route::post('/GetDaySummary', [GetDaySummaryController::class, 'getDaySummary']);
+Route::post('/GetDaySummary', [GetDaySummaryController::class, 'getDaySummary'])->name('daily_summary');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('GameLogin', [LaunchGameController::class, 'LaunchGame']);
