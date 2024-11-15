@@ -56,7 +56,8 @@ class GetDaySummaryController extends Controller
             'body' => $response->body(),
         ]);
 
-        return $this->buildErrorResponse(StatusCode::InternalServerError);
+        //return $this->buildErrorResponse(StatusCode::InternalServerError);
+         return back()->with('response', $this->buildErrorResponse(StatusCode::InternalServerError)->getData(true));
     }
 
     private function generateSignature(array $transactionData): string
