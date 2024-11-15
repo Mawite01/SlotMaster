@@ -14,8 +14,53 @@
     </section>
 
     <!-- Main content -->
-
     <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{{ route('admin.player.create') }}" class="btn btn-success " style="width: 100px;"><i
+                                class="fas fa-plus text-white  mr-2"></i>Create</a>
+                    </div>
+                    <div class="card " style="border-radius: 20px;">
+                        <div class="card-header">
+                            <h3>Player Lists</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="mytable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Currency Code</th>
+                                        <th>Turnover</th>
+                                        <th>Valid Turnover</th>
+                                        <th>Payout</th>
+                                        <th>Win/Lose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($summaries as $summary)
+                                        <tr>
+                                            <td>{{ $summary->summary_date }}</td>
+                                            <td>{{ $summary->currency_code }}</td>
+                                            <td>{{ number_format($summary->turnover, 2) }}</td>
+                                            <td>{{ number_format($summary->valid_turnover, 2) }}</td>
+                                            <td>{{ number_format($summary->payout, 2) }}</td>
+                                            <td>{{ number_format($summary->win_lose, 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -96,7 +141,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     {{-- <section class="content">
         <div class="container-fluid">

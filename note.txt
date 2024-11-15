@@ -10,7 +10,7 @@ tail -f /var/www/SlotMaster/storage/logs/laravel.log
 sudo su ubuntu
 crontab -e
 
-* * * * * cd /var/www/lucky_m_confirm_a && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/SlotMaster && php artisan schedule:run >> /dev/null 2>&1
 
 tail -f /var/log/mysql/error.log
 
