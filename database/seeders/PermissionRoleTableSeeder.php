@@ -26,7 +26,6 @@ class PermissionRoleTableSeeder extends Seeder
         ]);
         Role::findOrFail(1)->permissions()->sync($senior_permissions->pluck('id'));
 
-
         // Owner permissions
         $owner_permissions = Permission::whereIn('title', [
             'owner_access',

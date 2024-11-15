@@ -73,9 +73,9 @@ class BetController extends Controller
                 // Check for sufficient balance
                 if ($transaction['BetAmount'] > $PlayerBalance) {
                     //Log::warning('Insufficient balance detected', [
-                       // 'BetAmount' => $transaction['BetAmount'],
-                       // 'balance' => $PlayerBalance,
-                   // ]);
+                    // 'BetAmount' => $transaction['BetAmount'],
+                    // 'balance' => $PlayerBalance,
+                    // ]);
 
                     return $this->buildErrorResponse(StatusCode::InsufficientBalance, $PlayerBalance);
                 }

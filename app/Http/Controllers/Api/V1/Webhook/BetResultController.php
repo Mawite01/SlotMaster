@@ -9,16 +9,17 @@ use App\Http\Requests\Slot\ResultWebhookRequest;
 use App\Models\Admin\GameList;
 use App\Models\User;
 use App\Models\Webhook\Result;
+use App\Services\WalletService;
+use App\Traits\UseWebhook;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
-use App\Services\WalletService;
-use App\Traits\UseWebhook;
 
 class BetResultController extends Controller
 {
     use UseWebhook;
+
     public function handleResult(ResultWebhookRequest $request): JsonResponse
     {
         $transactions = $request->getTransactions();
@@ -31,6 +32,7 @@ class BetResultController extends Controller
                 $player = User::where('user_name', $transaction['PlayerId'])->first();
                 if (! $player) {
                     Log::warning('Invalid player detected', ['PlayerId' => $transaction['PlayerId']]);
+
                     return $this->buildErrorResponse(StatusCode::InvalidPlayerPassword, 0);
                 }
 
@@ -43,8 +45,9 @@ class BetResultController extends Controller
 
                 try {
                     // Validate signature and prevent duplicate ResultId
-                    if (!$this->isValidSignature($transaction) || $this->isDuplicateResult($transaction)) {
+                    if (! $this->isValidSignature($transaction) || $this->isDuplicateResult($transaction)) {
                         Redis::del($lockKey); // Release lock
+
                         return $this->buildErrorResponse(StatusCode::InvalidSignature, $player->wallet->balanceFloat);
                     }
 
@@ -72,6 +75,7 @@ class BetResultController extends Controller
             }
 
             DB::commit();
+
             return $this->buildSuccessResponse($newBalance ?? 0);
 
         } catch (\Exception $e) {
@@ -81,6 +85,7 @@ class BetResultController extends Controller
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
             ]);
+
             return response()->json(['message' => 'Failed to handle Result transactions'], 500);
         }
     }
@@ -114,8 +119,10 @@ class BetResultController extends Controller
                 'transaction' => $transaction,
                 'generated_signature' => $generatedSignature,
             ]);
+
             return false;
         }
+
         return true;
     }
 
@@ -139,8 +146,10 @@ class BetResultController extends Controller
         $existingTransaction = Result::where('result_id', $transaction['ResultId'])->first();
         if ($existingTransaction) {
             Log::warning('Duplicate ResultId detected', ['ResultId' => $transaction['ResultId']]);
+
             return true;
         }
+
         return false;
     }
 
@@ -178,11 +187,8 @@ class BetResultController extends Controller
             Log::error('Failed to log game result', [
                 'PlayerId' => $transaction['PlayerId'],
                 'Error' => $e->getMessage(),
-                'ResultId' => $transaction['ResultId']
+                'ResultId' => $transaction['ResultId'],
             ]);
         }
     }
-
-
-
 }

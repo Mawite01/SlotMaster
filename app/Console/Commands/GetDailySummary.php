@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Admin\DailySummary;
-use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class GetDailySummary extends Command
 {
     protected $signature = 'summary:fetch';
+
     protected $description = 'Fetch daily summary data and store it in the database';
 
     public function handle()

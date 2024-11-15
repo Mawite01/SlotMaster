@@ -15,6 +15,6 @@ class DailySummary extends Model
         'turnover',
         'valid_turnover',
         'payout',
-        'win_lose'
+        'win_lose',
     ];
 }

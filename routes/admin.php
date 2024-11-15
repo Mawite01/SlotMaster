@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BannerTextController;
 use App\Http\Controllers\Admin\Bonu\BonusController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\DailySummaryController;
 use App\Http\Controllers\Admin\Deposit\DepositRequestController;
 use App\Http\Controllers\Admin\GameListController;
 use App\Http\Controllers\Admin\GameTypeProductController;
@@ -25,7 +26,6 @@ use App\Http\Controllers\Admin\TransferLog\TransferLogController;
 use App\Http\Controllers\Admin\WithDraw\WithDrawRequestController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DailySummaryController;
 
 Route::group([
     'prefix' => 'admin',
@@ -61,8 +61,8 @@ Route::group([
     Route::resource('paymentTypes', PaymentTypeController::class);
     Route::resource('bank', BankController::class);
 
-     // provider Game Type Start
-     Route::get('gametypes', [GameTypeProductController::class, 'index'])->name('gametypes.index');
+    // provider Game Type Start
+    Route::get('gametypes', [GameTypeProductController::class, 'index'])->name('gametypes.index');
     Route::get('gametypes/{game_type_id}/product/{product_id}', [GameTypeProductController::class, 'edit'])->name('gametypes.edit');
     Route::post('gametypes/{game_type_id}/product/{product_id}', [GameTypeProductController::class, 'update'])->name('gametypes.update');
     // provider Game Type End
@@ -96,7 +96,6 @@ Route::group([
     Route::put('owner/{id}/ban', [OwnerController::class, 'banOwner'])->name('owner.ban');
     Route::get('owner-changepassword/{id}', [OwnerController::class, 'getChangePassword'])->name('owner.getChangePassword');
     Route::post('owner-changepassword/{id}', [OwnerController::class, 'makeChangePassword'])->name('owner.makeChangePassword');
-
 
     Route::get('agent-to-player-deplogs', [AgentController::class, 'AgentToPlayerDepositLog'])->name('agent.AgentToPlayerDepLog');
 
@@ -138,8 +137,6 @@ Route::group([
     Route::get('get-bet-detail/{wagerId}', [GetBetDetailController::class, 'getBetDetail'])->name('getBetDetail.show');
 
     Route::resource('/product_code', App\Http\Controllers\Admin\ProductCodeController::class);
-
-
 
     Route::group(['prefix' => 'slot'], function () {
         Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');

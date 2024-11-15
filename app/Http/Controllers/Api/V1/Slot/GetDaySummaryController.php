@@ -15,6 +15,7 @@ class GetDaySummaryController extends Controller
     {
         return view('admin.reports.get_day_summary');
     }
+
     public function getDaySummary(GetDaySummaryRequest $request): JsonResponse
     {
         $transactionData = $request->getTransactionData();
@@ -61,7 +62,7 @@ class GetDaySummaryController extends Controller
         ]);
 
         //return $this->buildErrorResponse(StatusCode::InternalServerError);
-         return back()->with('response', $this->buildErrorResponse(StatusCode::InternalServerError)->getData(true));
+        return back()->with('response', $this->buildErrorResponse(StatusCode::InternalServerError)->getData(true));
     }
 
     private function generateSignature(array $transactionData): string

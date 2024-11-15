@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('daily_summaries', function (Blueprint $table) {
-                $table->id();
-                $table->date('summary_date');
-                $table->string('currency_code', 10);
-                $table->decimal('turnover', 18, 2);
-                $table->decimal('valid_turnover', 18, 2);
-                $table->decimal('payout', 18, 2);
-                $table->decimal('win_lose', 18, 2);
-                $table->timestamps();
+            $table->id();
+            $table->date('summary_date');
+            $table->string('currency_code', 10);
+            $table->decimal('turnover', 18, 2);
+            $table->decimal('valid_turnover', 18, 2);
+            $table->decimal('payout', 18, 2);
+            $table->decimal('win_lose', 18, 2);
+            $table->timestamps();
         });
     }
 

@@ -78,8 +78,7 @@ class OwnerController extends Controller
             ]);
         }
         // image
-        if($request->agent_logo)
-        {
+        if ($request->agent_logo) {
             $image = $request->file('agent_logo');
             $ext = $image->getClientOriginalExtension();
             $filename = uniqid('logo').'.'.$ext; // Generate a unique filename
@@ -240,7 +239,7 @@ class OwnerController extends Controller
             }
 
             // Transfer money
-            app(WalletService::class)->transfer($master, $admin, $request->validated('amount'), TransactionName::DebitTransfer , ['note' => $request->note]);
+            app(WalletService::class)->transfer($master, $admin, $request->validated('amount'), TransactionName::DebitTransfer, ['note' => $request->note]);
 
             return redirect()->back()->with('success', 'Money fill request submitted successfully!');
         } catch (Exception $e) {
@@ -297,9 +296,8 @@ class OwnerController extends Controller
         );
 
         $user = User::find($id);
-    
-        if($request->file('agent_logo'))
-        {
+
+        if ($request->file('agent_logo')) {
             File::delete(public_path('assets/img/logo/'.$user->agent_logo));
             // image
             $image = $request->file('agent_logo');
@@ -308,12 +306,12 @@ class OwnerController extends Controller
             $image->move(public_path('assets/img/logo/'), $filename); // Save the file
             $request->agent_logo = $filename;
         }
-      
+
         $user->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'player_name' => $request->player_name,
-            'agent_logo' => $request->agent_logo
+            'agent_logo' => $request->agent_logo,
         ]);
 
         return redirect()->back()

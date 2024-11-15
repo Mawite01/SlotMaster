@@ -15,15 +15,13 @@ use App\Http\Controllers\Api\V1\WagerController;
 use App\Http\Controllers\Api\V1\Webhook\AdjustmentController;
 use App\Http\Controllers\Api\V1\Webhook\BetController;
 use App\Http\Controllers\Api\V1\Webhook\BetNResultController;
+use App\Http\Controllers\Api\V1\Webhook\BetResultController;
 use App\Http\Controllers\Api\V1\Webhook\CancelBetController;
 use App\Http\Controllers\Api\V1\Webhook\CancelBetNResultController;
-use App\Http\Controllers\Api\V1\Webhook\BetResultController;
 use App\Http\Controllers\Api\V1\Webhook\RewardController;
 use App\Http\Controllers\Api\V1\WithDrawRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
