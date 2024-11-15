@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\TransferLog\TransferLogController;
 use App\Http\Controllers\Admin\WithDraw\WithDrawRequestController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Slot\GetDaySummaryController;
 
 Route::group([
     'prefix' => 'admin',
@@ -143,5 +144,7 @@ Route::group([
     Route::group(['prefix' => 'slot'], function () {
         Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');
         Route::get('reports/details/{game_provide_name}', [ReportController::class, 'getReportDetails'])->name('reports.details');
+        // get day summary
+        Route::get('get-day-summary', [GetDaySummaryController::class, 'index']);
     });
 });

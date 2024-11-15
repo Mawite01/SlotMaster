@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class GetDaySummaryController extends Controller
 {
+    public function index()
+    {
+        return view('admin.reports.get_day_summary');
+    }
     public function getDaySummary(GetDaySummaryRequest $request): JsonResponse
     {
         $transactionData = $request->getTransactionData();
