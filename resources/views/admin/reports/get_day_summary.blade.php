@@ -24,58 +24,39 @@
                     </div>
                     <div class="card " style="border-radius: 20px;">
                         <div class="card-header">
-                            <h3>Report</h3>
+                            <h3>Get Day Summary</h3>
                         </div>
-                        <form action="{{ route('daily_summary') }}" method="POST">
-                            @csrf
-                            <div class="card-body mt-2">
-                                <h1>Get Day Summary</h1>
-                                <div class="row">
-                                    <div
-                                        class="col-lg-12 offset-lg-0 col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-10 offset-1 ">
 
 
-                                        <div class="form-group">
-                                            <label for="OperatorId">OperatorId:</label>
-                                            <input type="text" id="OperatorId" name="OperatorId" value="delightMMK"
-                                                required><br><br>
-                                        </div>
 
+                        <div class="card-body">
+                            <form action="{{ route('daily_summary') }}" method="POST">
 
-                                        <div class="form-group">
-                                            <label for="RequestDateTime">RequestDateTime:</label>
-                                            <input type="text" id="RequestDateTime" name="RequestDateTime"
-                                                value="2024-11-11 12:12:12" required><br><br>
-                                        </div>
+                                @csrf
+                                <label for="OperatorId">OperatorId:</label>
+                                <input type="text" id="OperatorId" name="OperatorId" value="delightMMK" required><br><br>
 
-                                        <div class="form-group">
-                                            <label for="Signature">Signature:</label>
-                                            <input type="text" id="Signature" name="Signature"
-                                                value="b7acad4a4fb0de124cc64106ab6d0eea" required><br><br>
-                                        </div>
+                                <label for="RequestDateTime">RequestDateTime:</label>
+                                <input type="text" id="RequestDateTime" name="RequestDateTime"
+                                    value="2024-11-11 12:12:12" required><br><br>
 
-                                        <div class="form-group">
-                                            <label for="Date">Date:</label>
-                                            <input type="text" id="Date" name="Date" value="2024-11-14T00:00:00Z"
-                                                required><br><br>
-                                        </div>
+                                <label for="Signature">Signature:</label>
+                                <input type="text" id="Signature" name="Signature"
+                                    value="b7acad4a4fb0de124cc64106ab6d0eea" required><br><br>
 
-                                        <button type="submit">Submit</button>
+                                <label for="Date">Date:</label>
+                                <input type="text" id="Date" name="Date" value="2024-11-14T00:00:00Z"
+                                    required><br><br>
 
-                                    </div>
+                                <button type="submit">Submit</button>
+                            </form>
 
+                            @if (session('response'))
+                                <h2>Response</h2>
+                                <pre>{{ json_encode(session('response'), JSON_PRETTY_PRINT) }}</pre>
+                            @endif
 
-                                    @if (session('response'))
-                                        <h2>Response</h2>
-                                        <pre>{{ json_encode(session('response'), JSON_PRETTY_PRINT) }}</pre>
-                                    @endif
-                                    </body>
-                                </div>
-
-                                <div class="card-footer col-12 bg-white">
-                                    <button type="submit" class="btn btn-success float-right">Submit</button>
-                                </div>
-                        </form>
+                        </div>
 
                         <!-- /.card-body -->
                     </div>
