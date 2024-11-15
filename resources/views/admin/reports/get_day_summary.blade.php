@@ -18,13 +18,13 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="d-flex justify-content-end mb-3">
+                    {{-- <div class="d-flex justify-content-end mb-3">
                         <a href="{{ route('admin.player.create') }}" class="btn btn-success " style="width: 100px;"><i
                                 class="fas fa-plus text-white  mr-2"></i>Create</a>
-                    </div>
+                    </div> --}}
                     <div class="card " style="border-radius: 20px;">
                         <div class="card-header">
-                            <h3>Player Lists</h3>
+                            <h3>GetDaySummary for Seniour</h3>
                         </div>
                         <div class="card-body">
                             <table id="mytable" class="table table-bordered table-hover">
