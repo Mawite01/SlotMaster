@@ -124,6 +124,16 @@
                                 </a>
                             </li>
                         @endcan
+                        @can('owner_index')
+                            <li class="nav-item">
+                                <a href="{{ url('admin/slot/report') }}" class="nav-link">
+                                    <i class="fas fa-users"></i>
+                                    <p>
+                                        W/L Report
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
                         @can('admin_access')
                             <li class="nav-item">
                                 <a href="{{ url('admin/slot/report') }}" class="nav-link">
