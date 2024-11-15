@@ -50,6 +50,14 @@ class CancelBetController extends Controller
                 // Validate transaction signature
                 $signature = $this->generateSignature($transaction);
                 Log::info('CancelBet Signature', ['GeneratedCancelBetSignature' => $signature]);
+                if ($signature !== $transaction['Signature']) {
+                    // Log::warning('Signature validation failed', [
+                    //     'transaction' => $transaction,
+                    //     'generated_signature' => $signature,
+                    // ]);
+
+                    return $this->buildErrorResponse(StatusCode::InvalidSignature);
+                }
                 // Check if the transaction already exists
                 $existingTransaction = Bet::where('bet_id', $transaction['BetId'])->first();
 
