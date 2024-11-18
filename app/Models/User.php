@@ -21,6 +21,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Admin\Banner;
 
 class User extends Authenticatable implements Wallet
 {
@@ -241,6 +242,11 @@ class User extends Authenticatable implements Wallet
         return $this->children()->whereHas('roles', function ($query) {
             $query->where('name', 'Player'); // Assuming you have roles for users
         });
+    }
+
+    public function banners()
+    {
+        return $this->hasMany(Banner::class, 'admin_id'); // Banners owned by this admin
     }
 
 }
