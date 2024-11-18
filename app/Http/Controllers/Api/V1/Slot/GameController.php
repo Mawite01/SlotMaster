@@ -44,12 +44,13 @@ class GameController extends Controller
         return $this->success($gameTypes);
     }
 
-    public function gameList($product_id, $game_type_id)
+    public function gameList($product_id, $game_type_id, Request $request)
     {
         $gameLists = GameList::with('product')
             ->where('product_id', $product_id)
             ->where('game_type_id', $game_type_id)
             ->where('status', 1)
+            ->where('game_name', 'like', '%'.$request->name.'%')
             ->get();
 
         return $this->success(GameDetailResource::collection($gameLists), 'Game Detail Successfully');
@@ -69,13 +70,5 @@ class GameController extends Controller
             ->get();
 
         return $this->success(GameDetailResource::collection($gameLists), 'Hot Game Detail Successfully');
-    }
-
-    public function gameFilter(Request $request)
-    {
-        $gameLists = GameList::where('game_name', 'like', '%'.$request->name.'%')->get();
-
-        return $this->success(GameDetailResource::collection($gameLists), 'Game Detail Successfully');
-
     }
 }

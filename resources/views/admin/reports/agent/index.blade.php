@@ -24,34 +24,29 @@
                     </div>
                     <div class="card " style="border-radius: 20px;">
                         <div class="card-header">
-                            <h3>Report</h3>
+                            <h3>Agent Report</h3>
                         </div>
                         <div class="card-body">
                             <table id="mytable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>AgentName</th>
-                                        <th>UserName</th>
-                                        <th>ProviderName</th>
-                                        <th>TotalStake</th>
-                                        <th>TotalBet</th>
-                                        <th>TotalWin</th>
-                                        <th>TotalNetWin</th>
+                                        <th>Player</th>
+                                        <th>Total Bets</th>
+                                        <th>Total Wins</th>
+                                        <th>Total Net</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($report as $row)
+                                    @foreach ($results as $result)
                                         <tr>
-                                            <td>{{ $row->agent_name }}</td>
-                                            <td>{{ $row->player_name }}</td>
-                                            <td>{{ $row->game_provide_name }}</td>
-                                            <td>{{ $row->total_games }}</td>
-                                            <td>{{ number_format($row->total_bet_amount, 2) }}</td>
-                                            <td>{{ number_format($row->total_win_amount, 2) }}</td>
-                                            <td>{{ number_format($row->total_net_win, 2) }}</td>
-                                            <td><a
-                                                    href="{{ route('admin.reports.details', ['game_provide_name' => $row->game_provide_name]) }}">Detail</a>
+                                            <td>{{ $result->user->name }}</td>
+                                            <td>{{ $result->total_bets }}</td>
+                                            <td>{{ $result->total_wins }}</td>
+                                            <td>{{ $result->total_net }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.reports.agent.detail', $result->user_id) }}"
+                                                    class="btn btn-info">Details</a>
                                             </td>
                                         </tr>
                                     @endforeach

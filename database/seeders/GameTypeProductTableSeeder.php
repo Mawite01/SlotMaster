@@ -16,7 +16,7 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 1,  // PPLAY
                 'game_type_id' => 2,  // Slots
-                'image' => 'pragmatic_play.png',
+                'image' => 'pp_play.png',
                 'rate' => '1.0000',
             ],
             [
@@ -34,25 +34,25 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 4,  // JILI
                 'game_type_id' => 2,  // Slots
-                'image' => 'jili.png',
+                'image' => 'jl_slot.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 5,  // L22
                 'game_type_id' => 2,  // Slots
-                'image' => 'live22.png',
+                'image' => 'live_22.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 6,  // JDB
                 'game_type_id' => 2,  // Other
-                'image' => 'jdb.png',
+                'image' => 'JDB.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 7,  // CQ9
                 'game_type_id' => 2,  // Arcade
-                'image' => 'cq_9.png',
+                'image' => 'cq_9_slot.png',
                 'rate' => '1.0000',
             ],
             [
@@ -64,37 +64,37 @@ class GameTypeProductTableSeeder extends Seeder
             [
                 'product_id' => 8,  // UUS
                 'game_type_id' => 2,  // Slots
-                'image' => 'uu_slot.png',
+                'image' => 'UUslot.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 9,  // MGH5
                 'game_type_id' => 2,  // Other
-                'image' => 'mega_h5.jfif',
+                'image' => 'MEGAH5.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 10,  // MGH5
                 'game_type_id' => 2,  // Other
-                'image' => 'epic_win.jfif',
+                'image' => 'Epic_win.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 11,  // MGH5
                 'game_type_id' => 2,  // Other
-                'image' => 'yellow_bat.png',
+                'image' => 'Yellow_bet.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 12,  // EVOPLAY
                 'game_type_id' => 2,  // Other
-                'image' => 'evoplay.png',
+                'image' => 'Evo_Play.png',
                 'rate' => '1.0000',
             ],
             [
                 'product_id' => 13,  // FACHAI
                 'game_type_id' => 2,  // Arcade
-                'image' => 'fachai.jfif',
+                'image' => 'Fachai.png',
                 'rate' => '1.0000',
             ],
             [

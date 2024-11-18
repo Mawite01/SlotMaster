@@ -20,20 +20,20 @@
                 <div class="col-12">
                     <div class="d-flex justify-content-end mb-3">
                         <a href="{{ url('admin/slot/report') }}" class="btn btn-success " style="width: 100px;"><i
-                                class="fas fa-plus text-white  mr-2"></i>Back</a>
+                                class="fas fa-plus text-white  mr-2"></i>Go To W/L Report V1</a>
                     </div>
                     <div class="card " style="border-radius: 20px;">
                         <div class="card-header">
-                            <h3>W/L Report Detail</h3>
+                            <h3>{{ $player->name }} - W/L Report Detail </h3>
                         </div>
                         <div class="card-body">
                             <table id="mytable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        {{-- <th>User Name</th> --}}
+                                        <th>User Name</th>
                                         <th>Player Name</th>
                                         <th>Game Name</th>
-                                        {{-- <th>Operator ID</th> --}}
+                                        <th>Provider</th>
                                         <th>History1</th>
                                         <th>History2</th>
                                         <th>DateTime</th>
@@ -48,10 +48,10 @@
                                 <tbody>
                                     @foreach ($details as $detail)
                                         <tr>
-                                            {{-- <td>{{ $detail->user_name }}</td> --}}
+                                            <td>{{ $detail->user_name }}</td>
                                             <td>{{ $detail->player_name }}</td>
                                             <td>{{ $detail->game_name }}</td>
-                                            {{-- <td>{{ $detail->operator_id }}</td> --}}
+                                            <td>{{ $detail->game_provide_name }}</td>
                                             {{-- <td><a href="https://delightmyanmar99.pro/api/transaction-details/{{ $detail->round_id }}"
                                                     target="_blank"
                                                     style="color: blueviolet; text-decoration: underline;">{{ $detail->round_id }}</a>
@@ -71,6 +71,15 @@
                                                     {{ $detail->result_id }}
                                                 </a>
                                             </td>
+
+                                            {{-- <td>
+                                                <a href="javascript:void(0);"
+                                                    onclick="getTransactionDetails('{{ $detail->round_id ? $detail->result_id : null }}')"
+                                                    style="color: blueviolet; text-decoration: underline;">
+                                                    {{ $detail->round_id }}
+                                                </a>
+                                            </td> --}}
+
                                             <td>{{ $detail->request_date_time }}</td>
                                             <td>{{ $detail->currency }}</td>
                                             <td>{{ number_format($detail->total_bet_amount, 2) }}</td>

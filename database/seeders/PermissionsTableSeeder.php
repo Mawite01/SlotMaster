@@ -15,6 +15,22 @@ class PermissionsTableSeeder extends Seeder
     {
         $permissions = [
             [
+                'title' => 'senior_access',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'owner_access',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'game_type_access',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
                 'title' => 'admin_access',
                 'created_at' => now(),
                 'updated_at' => now(),

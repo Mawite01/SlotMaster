@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\GameTypeProductController;
 use App\Http\Controllers\Admin\GetBetDetailController;
 use App\Http\Controllers\Admin\GSCReportController;
 use App\Http\Controllers\Admin\Master\MasterController;
+use App\Http\Controllers\Admin\MultiBannerReportController;
 use App\Http\Controllers\Admin\Owner\OwnerController;
 use App\Http\Controllers\Admin\PaymentTypeController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -88,6 +89,7 @@ Route::group([
     Route::post('agent-changepassword/{id}', [AgentController::class, 'makeChangePassword'])->name('agent.makeChangePassword');
 
     Route::resource('owner', OwnerController::class);
+    Route::get('owner-player-list', [OwnerController::class, 'OwnerPlayerList'])->name('GetOwnerPlayerList');
     Route::get('owner-cash-in/{id}', [OwnerController::class, 'getCashIn'])->name('owner.getCashIn');
     Route::post('owner-cash-in/{id}', [OwnerController::class, 'makeCashIn'])->name('owner.makeCashIn');
     Route::get('mastownerer/cash-out/{id}', [OwnerController::class, 'getCashOut'])->name('owner.getCashOut');
@@ -141,8 +143,12 @@ Route::group([
     Route::group(['prefix' => 'slot'], function () {
         Route::get('report', [ReportController::class, 'getReportGroupedByGameProvider'])->name('report.index');
         Route::get('reports/details/{game_provide_name}', [ReportController::class, 'getReportDetails'])->name('reports.details');
-        // get day summary
-        //Route::get('get-day-summary', [GetDaySummaryController::class, 'index']);
         Route::get('/daily-summaries', [DailySummaryController::class, 'index'])->name('daily_summaries.index');
+
+        Route::get('/reports/senior', [MultiBannerReportController::class, 'getSeniorReport'])->name('reports.senior');
+        Route::get('/reports/owner', [MultiBannerReportController::class, 'getAdminReport'])->name('reports.owner');
+        Route::get('/reports/agent', [MultiBannerReportController::class, 'getAgentReport'])->name('reports.agent');
+        Route::get('/reports/agent/detail/{user_id}', [MultiBannerReportController::class, 'getAgentDetail'])->name('reports.agent.detail');
+
     });
 });
