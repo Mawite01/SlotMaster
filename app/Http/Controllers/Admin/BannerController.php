@@ -12,12 +12,19 @@ class BannerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $banners = Banner::latest()->get();
+    // public function index()
+    // {
+    //     $banners = Banner::latest()->get();
 
-        return view('admin.banners.index', compact('banners'));
-    }
+    //     return view('admin.banners.index', compact('banners'));
+    // }
+    public function index()
+{
+    $banners = Banner::where('admin_id', auth()->id())->get(); // Fetch banners for the logged-in admin
+
+    return view('admin.banners.index', compact('banners'));
+}
+
 
     /**
      * Show the form for creating a new resource.
