@@ -24,7 +24,7 @@
                     </div> --}}
                     <div class="card " style="border-radius: 20px;">
                         <div class="card-header">
-                            <h3>GetDaySummary for Seniour</h3>
+                            <h3>GetDaySummary for Senior</h3>
                         </div>
                         <div class="card-body">
                             <table id="mytable" class="table table-bordered table-hover">
